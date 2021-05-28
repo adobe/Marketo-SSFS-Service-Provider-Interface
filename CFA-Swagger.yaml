@@ -306,6 +306,7 @@ components:
           example: https://serviceprovider.com/send/action/here 
         authenticationSettings:
           type: object
+          $ref: '#/components/schemas/authenticationSettingsObject'
         caBundle:
           type: string
           format: uri
@@ -462,6 +463,49 @@ components:
         uiTooltip:
           type: string
           example: "what kind of oil you want to use?"
+    authenticationSettingsObject:
+      type: object
+      required: [authType]
+      properties:
+        authType: 
+          type: string
+          enum: [basic, clientCredentials, apiKey]
+        basic: 
+          $ref: '#/components/schemas/basicAuthObject'
+        clientCredentials: 
+          $ref: '#/components/schemas/clientCredentialsObject'
+        apiKey: 
+          $ref: '#/components/schemas/apiKeyObject'
+    basicAuthObject:
+      type: object
+      properties:
+          realmRequired: 
+            type: boolean
+    apiKeyObject:
+      type: object
+      properties:
+        headerName: 
+          type: string
+          example: "x-API-Key"
+    clientCredentialsObject:
+      type: object
+      required: [tokenEndpoint]
+      properties:
+        tokenEndpoint: 
+          type: string
+          example: "https://example.com/oauth2/token"
+          format: uri
+        refreshTokenEnabled: 
+          type: boolean
+        grantTypeName: 
+          type: string
+          example: "grant_type"
+        clientIdName: 
+          type: string
+          example: "client_id"
+        clientSecretName: 
+          type: string
+          example: "client_secret"
     serviceFieldMapping:
       type: object
       properties:
