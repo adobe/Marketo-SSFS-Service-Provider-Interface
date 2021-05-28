@@ -1,0 +1,509 @@
+openapi: 3.0.1
+info:
+  title: SSFA
+  description: This is a sample SSFA server swagger doc for providers to build their
+    own services to be used with Marketo SSFA.
+  termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
+  license:
+    name: Marketo API License
+    url: https://developers.marketo.com/api-license/
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://<yourAPI>.com/v1
+tags:
+- name: flow action
+  description: your service action
+  externalDocs:
+    description: Find out more
+    url: todo://marketo.docs/link
+paths:
+  /submitAsyncAction:
+    post:
+      tags:
+      - flow action
+      operationId: ""
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/async'
+      callbacks: # Callback definition
+        selfServiceFlowComplete: 
+          '{$request.body#/flowComplete}':
+             post:
+              requestBody:
+                description: Flow Action return data for post processing
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/flowCallBack'
+                  application/xml:
+                    schema:
+                      $ref: '#/components/schemas/flowCallBack'
+              responses:
+                405:
+                  description: Invalid input
+                  content: {}
+                404:
+                  description: Not Found
+                  content: {}
+      responses:
+        201:
+          description: |- 
+            Accepted:
+            - Webhook created
+        400:
+          description: |-
+            Bad Request:
+            - Expected parameters were missing from the request or were invalid or Invalid document structure
+        401:
+          description: |-
+            Unauthorized:
+            - The API credentials which Marketo has are not authorized to undertake the action
+        403:
+          description: |-
+            Forbidden:
+            - Authentication Failed
+        429:
+          description: |-
+            Too Many Requests:
+            - The service has received too many requests and should retry w/ an appropriate strategy
+        500:
+          description: |-
+            Internal Server Error:
+            - Invoking the service failed for an unknown reason
+  /getServiceDefinition:
+    get: #update to get
+      summary: Returns a service definition for user install
+      responses:
+        200:
+          description: Service Install Metadata
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/serviceDefinition'
+components:
+  schemas:
+    async:
+      required:
+      - id
+      - batchid
+      - campaignId
+      - type
+      - callbackUrl
+      type: object
+      properties:
+        id: 
+          type: string
+          format: uuid
+        batchid:
+          type: string
+          format: uuid
+        campaignId:
+          type: integer
+          format: int32
+        callbackUrl:   # Callback URL
+          type: string
+          format: uri
+          example: https://adobe.com/send/callback/here
+        type:
+          type: string
+          example: 'customFlow'
+        context: 
+          $ref: '#/components/schemas/context'
+        objectData:
+          type: array
+          items:
+            $ref: '#/components/schemas/objectData'
+    context:
+      type: object
+      required:
+      - subscription
+      properties:
+        subscription: 
+          $ref: '#/components/schemas/subscription'
+        admin: 
+          $ref: '#/components/schemas/admin'
+        campaign: 
+          $ref: '#/components/schemas/campaign'
+        program: 
+          $ref: '#/components/schemas/program'
+    subscription: # subscription identifiers
+      type: object
+      required:
+      - munchkinId
+      properties:
+        munchkinId:
+          type: string
+          example: '337-INS-529'
+        prefix:
+          type: string
+          example: 'customerPrefix'
+    admin: # admin configuration of service
+      type: object
+    campaign: # campaign identifiers / runtime information
+      type: object
+    program: # program identifiers / runtime information
+      type: object
+    flowStepContext: #context for a leads flow step choices
+      type: array
+      items:
+        $ref: '#/components/schemas/flowStepObject'
+    flowStepObject:
+      type: object
+      properties:
+        Car:
+          type: string
+          example: 'Honda CRV'
+        Oil Brand:
+          type: string
+          example: 'Mobil 1'
+    programMemberContext: #context for a leads flow step choices
+      type: array
+      items:
+        $ref: '#/components/schemas/programMemberObject'
+    programMemberObject:
+      type: object
+      properties:
+        PMCFa:
+          type: string
+          example: 'xyz'
+    triggeringContext: #context for a leads flow step choices
+      type: array
+      items:
+        $ref: '#/components/schemas/triggeringObject'
+    triggeringObject:
+      type: object
+      properties:
+        field:
+          type: string
+          example: 'value'
+    objectData:
+      required:
+      - objectType
+      - objectData
+      type: object
+      properties:
+        objectType: 
+          type: string
+          example: lead
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 123
+            leadContext:
+              $ref: '#/components/schemas/fieldsCallback'
+        flowStepContext:
+          $ref: '#/components/schemas/flowStepContext'
+        programMemberContext:
+          $ref: '#/components/schemas/programMemberContext'
+        triggeringContext:
+          $ref: '#/components/schemas/triggeringContext'
+        
+    defaultValues:
+      required:
+      - objectType
+      - fields
+      type: object
+      properties:
+        objectType: 
+          type: string
+          example: lead
+        fields:
+          type: object
+          properties: 
+            updateFields:
+              $ref: '#/components/schemas/fieldsObject'
+            loggingFields:
+              $ref: '#/components/schemas/fieldsObject'
+    objectDataCallBack:
+      required:
+      - objectType
+      - objectData
+      type: object
+      properties:
+        objectType: 
+          type: string
+          example: lead
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 123
+            fields:
+              type: object
+              properties: 
+                updateFields:
+                  $ref: '#/components/schemas/fieldsObject'
+                loggingFields:
+                  $ref: '#/components/schemas/fieldsObject'
+    fieldsObject:
+      type: object
+      properties:
+        fieldName1:
+          type: string
+          example: 'fieldValue1'
+        fieldName2:
+          type: string
+          example: 'fieldValue2'
+    flowCallBack:
+      required:
+      - munchkinId
+      - token
+      - time
+      type: object
+      properties:
+        munchkinId:
+          type: string
+          example: '123-ABD-456'
+        token:
+          type: string
+          example: '3912aec7-6d5c-4348-8b32-08966ac0dbc7'
+        time:
+          type: string
+          format: date-time
+        defaultValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/defaultValues'
+        objectData:
+          type: array
+          items:
+            $ref: '#/components/schemas/objectDataCallBack'
+      xml:
+        name: flowCallBack
+    serviceDefinition:
+      type: object
+      required: 
+      - serviceProvider
+      - name
+      - description
+      - endpoint
+      - authenticationSettings
+      - servicePayload
+      properties:
+        provider:
+          type: string
+          example: "ProviderA"
+        i18n:
+          type: object
+          properties:
+            en_US: 
+              $ref: '#/components/schemas/namesObject'
+        apiName:
+          type: string
+          example: 'Change Oil API Name'
+        invocationEndpoint:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/send/action/here 
+        authenticationSettings:
+          type: object
+        caBundle:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/get/service/caBundle
+        serviceIcon:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/get/service/icon.jpeg
+        brandIcon:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/get/brand/icon.jpeg
+        providerInstructions:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/get/provider/instructions
+        servicePayload:
+          $ref: '#/components/schemas/servicePayloadObject'
+    namesObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Change Oil'
+        filterName:
+          type: string
+          example: 'Change Oil Filter Name'
+        triggerName:
+          type: string
+          example: 'Change Oil Trigger Name'
+        description:
+          type: string
+          example: 'I Change Car Oil'
+    servicePayloadObject:
+      type: object
+      properties:
+        marketoRequest:
+          $ref: '#/components/schemas/marketoRequestObject'
+        serviceResponse:
+          $ref: '#/components/schemas/serviceResponseObject'
+    marketoRequestObject:
+      type: object
+      required: 
+      - attributes
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/requestAttributeObject'
+        fields: 
+          type: array
+          items:
+            $ref: '#/components/schemas/serviceFieldMapping'
+        userDrivenMapping:
+          type: boolean
+        programContext: 
+          type: boolean
+          description: 'true if customer wants program context'
+        campaignContext: 
+          type: boolean
+          description: 'true if customer wants campaign context'
+        triggerContext: 
+          type: boolean
+          description: 'true if customer wants trigger context'
+        memberContext: 
+          type: boolean
+          description: 'true if customer wants member context'
+        subscriptionContext: 
+          type: boolean
+          description: 'true if customer wants subscription context'
+    serviceResponseObject:
+      type: object
+      required: 
+      - attributes
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/serviceAttributeObject'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/serviceFieldMapping'
+    requestAttributeObject:
+      type: object
+      required:
+        - scope
+        - name
+        - apiName
+        - description
+        - datatype
+      properties:
+        scope:
+          type: string
+          description: global (admin), flow (marketo outgoing)
+          enum: [global, flow, response]
+        attributeName:
+          type: string
+          example: "Oil Brand"
+        apiName:
+          type: string
+          example: "oilBrand"
+        i18n:
+          type: object
+          properties:
+            en_US:
+              $ref: '#/components/schemas/attributeStringI18NObject'
+        datatype:
+          type: string
+          example: "integer"
+        enforcePicklistSelect:
+          type: boolean
+        autosuggestUrl:
+          type: string
+          format: uri
+          example: "https://serviceprovider.com/get/auto/suggest"
+    serviceAttributeObject:
+      type: object
+      required:
+        - name
+        - apiName
+        - description
+        - datatype
+      properties:
+        attributeName:
+          type: string
+          example: "Oil Brand"
+        apiName:
+          type: string
+          example: "oilBrand"
+        i18n:
+          type: object
+          properties:
+            en_US:
+              $ref: '#/components/schemas/attributeStringI18NObject'
+        datatype:
+          type: string
+          example: "integer"
+        enforcePicklistSelect:
+          type: boolean
+        autosuggestUrl:
+          type: string
+          format: uri
+          example: "https://serviceprovider.com/get/auto/suggest"
+    attributeStringI18NObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Oil Brand"
+        description:
+          type: string
+          example: "The oil brand used"
+        uiTooltip:
+          type: string
+          example: "what kind of oil you want to use?"
+    serviceFieldMapping:
+      type: object
+      properties:
+        serviceAttributeName:
+          type: string
+          example: "serviceAttributeName"
+        suggestedMarketoAttribute:
+          type: string
+          example: "marketoAttributeName"
+        description:
+          type: object
+          properties:
+            en_US:
+              type: string
+              example: "This is what this attribure is for"
+          
+        datatype:
+          type: string
+          example: integer
+    fieldsCallback:
+      type: object
+      properties:
+        fieldName1:
+          type: string
+          example: 'fieldValue1'
+        fieldName2:
+          type: string
+          example: 'fieldValue2'
+          
+        
+          
+  securitySchemes:
+    #need to determine what security schemes are needed. 
+    petstoreAuth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://petstore.swagger.io/oauth/dialog
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
