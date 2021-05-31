@@ -281,47 +281,52 @@ components:
         name: flowCallBack
     serviceDefinition:
       type: object
-      required: 
-      - serviceProvider
-      - name
-      - description
-      - endpoint
+      required:
+      - provider
+      - apiName
+      - i18n
+      - invocationEndpoint
+      - statusEndpoint
       - authenticationSettings
       - servicePayload
       properties:
+        apiName:
+          type: string
+          example: 'lookupTable'
         provider:
           type: string
-          example: "ProviderA"
+          example: "Adobe Marketo Engage"
         i18n:
           type: object
           properties:
             en_US: 
               $ref: '#/components/schemas/namesObject'
-        apiName:
-          type: string
-          example: 'Change Oil API Name'
         invocationEndpoint:
           type: string
           format: uri
           example: https://serviceprovider.com/send/action/here 
-        authenticationSettings:
-          type: object
+        statusEndpoint:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/get/status
+        authSetting:
+          $ref: '#/components/schemas/authSettingObject'
         caBundle:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/service/caBundle
+          example: https://serviceprovider.com/get/caBundle
         serviceIcon:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/service/icon.jpeg
+          example: https://serviceprovider.com/get/service.ico
         brandIcon:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/brand/icon.jpeg
-        providerInstructions:
+          example: https://serviceprovider.com/get/brand.ico
+        providerInstruction:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/provider/instructions
+          example: https://serviceprovider.com/get/provider_instruction.html
         servicePayload:
           $ref: '#/components/schemas/servicePayloadObject'
     namesObject:
@@ -329,16 +334,41 @@ components:
       properties:
         name:
           type: string
-          example: 'Change Oil'
+          example: 'Lookup Table'
         filterName:
           type: string
-          example: 'Change Oil Filter Name'
+          example: 'Lookup Table was Used'
         triggerName:
           type: string
-          example: 'Change Oil Trigger Name'
+          example: 'Use Lookup Table'
         description:
           type: string
-          example: 'I Change Car Oil'
+          example: 'Use a lookup table to get a value'
+    authSettingObject:
+      required:
+        - authType
+      properties:
+        authType:
+          type: string
+          enum: ['basic', 'apiKey', 'credential']
+        realmRequired:
+          type: boolean
+          description: Applicable if and only if authType is basic
+        headerName:
+          type: string
+          example: 'x-API-Key'
+          description: Applicable if and only if authType is apiKey
+        grantTypeName:
+          type: string
+          example: "grant_type"
+          description: Applicable if and only if authType is credential
+        tokenEndpoint:
+          type: string
+          format: uri
+          description: Applicable if and only if authType is credential
+        refreshTokenEnabled:
+          type: boolean
+          description: Applicable if and only if authType is credential
     servicePayloadObject:
       type: object
       properties:
@@ -363,19 +393,19 @@ components:
           type: boolean
         programContext: 
           type: boolean
-          description: 'true if customer wants program context'
+          description: 'true if Service Provider needs to access program context'
         campaignContext: 
           type: boolean
-          description: 'true if customer wants campaign context'
+          description: 'true if Service Provider needs to access campaign context'
         triggerContext: 
           type: boolean
-          description: 'true if customer wants trigger context'
+          description: 'true if Service Provider needs to access trigger context'
         memberContext: 
           type: boolean
-          description: 'true if customer wants member context'
+          description: 'true if Service Provider needs to access member context'
         subscriptionContext: 
           type: boolean
-          description: 'true if customer wants subscription context'
+          description: 'true if Service Provider needs to access subscription context'
     serviceResponseObject:
       type: object
       required: 
@@ -393,9 +423,8 @@ components:
       type: object
       required:
         - scope
-        - name
+        - i18n
         - apiName
-        - description
         - datatype
       properties:
         scope:
@@ -404,10 +433,10 @@ components:
           enum: [global, flow, response]
         attributeName:
           type: string
-          example: "Oil Brand"
+          example: "Key Value"
         apiName:
           type: string
-          example: "oilBrand"
+          example: "keyValue"
         i18n:
           type: object
           properties:
@@ -415,7 +444,7 @@ components:
               $ref: '#/components/schemas/attributeStringI18NObject'
         datatype:
           type: string
-          example: "integer"
+          example: "string"
         enforcePicklistSelect:
           type: boolean
         autosuggestUrl:
@@ -432,10 +461,10 @@ components:
       properties:
         attributeName:
           type: string
-          example: "Oil Brand"
+          example: "Return Value"
         apiName:
           type: string
-          example: "oilBrand"
+          example: "returnValue"
         i18n:
           type: object
           properties:
@@ -443,7 +472,7 @@ components:
               $ref: '#/components/schemas/attributeStringI18NObject'
         datatype:
           type: string
-          example: "integer"
+          example: "string"
         enforcePicklistSelect:
           type: boolean
         autosuggestUrl:
@@ -455,13 +484,13 @@ components:
       properties:
         name:
           type: string
-          example: "Oil Brand"
+          example: "Key Value"
         description:
           type: string
-          example: "The oil brand used"
+          example: "Marketo field to be used as lookup value"
         uiTooltip:
           type: string
-          example: "what kind of oil you want to use?"
+          example: "What Marketo field should be used to find the lookup value?"
     serviceFieldMapping:
       type: object
       properties:
@@ -476,8 +505,7 @@ components:
           properties:
             en_US:
               type: string
-              example: "This is what this attribure is for"
-          
+              example: "This is what this attribute is for"
         datatype:
           type: string
           example: integer
