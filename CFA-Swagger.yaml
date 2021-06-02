@@ -281,14 +281,7 @@ components:
         name: flowCallBack
     serviceDefinition:
       type: object
-      required:
-      - provider
-      - apiName
-      - i18n
-      - invocationEndpoint
-      - statusEndpoint
-      - authenticationSettings
-      - servicePayload
+      required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, servicePayload]
       properties:
         apiName:
           type: string
@@ -300,7 +293,7 @@ components:
           type: object
           properties:
             en_US: 
-              $ref: '#/components/schemas/namesObject'
+              $ref: '#/components/schemas/serviceI18nObject'
         invocationEndpoint:
           type: string
           format: uri
@@ -329,7 +322,7 @@ components:
           example: https://serviceprovider.com/get/provider_instruction.html
         servicePayload:
           $ref: '#/components/schemas/servicePayloadObject'
-    namesObject:
+    serviceI18nObject:
       type: object
       properties:
         name:
@@ -345,12 +338,11 @@ components:
           type: string
           example: 'Use a lookup table to get a value'
     authSettingObject:
-      required:
-        - authType
+      required: [authType]
       properties:
         authType:
           type: string
-          enum: ['basic', 'apiKey', 'credential']
+          enum: ['basic', 'apiKey', 'oauth2']
         realmRequired:
           type: boolean
           description: Applicable if and only if authType is basic
@@ -358,17 +350,17 @@ components:
           type: string
           example: 'x-API-Key'
           description: Applicable if and only if authType is apiKey
-        grantTypeName:
+        grantType:
           type: string
-          example: "grant_type"
-          description: Applicable if and only if authType is credential
+          enum: ['client_credentials']
+          description: Applicable if and only if authType is oauth2
         tokenEndpoint:
           type: string
           format: uri
-          description: Applicable if and only if authType is credential
+          description: Applicable if and only if authType is oauth2
         refreshTokenEnabled:
           type: boolean
-          description: Applicable if and only if authType is credential
+          description: Applicable if and only if authType is oauth2
     servicePayloadObject:
       type: object
       properties:
@@ -378,8 +370,7 @@ components:
           $ref: '#/components/schemas/serviceResponseObject'
     marketoRequestObject:
       type: object
-      required: 
-      - attributes
+      required: [attributes]
       properties:
         attributes:
           type: array
@@ -408,8 +399,7 @@ components:
           description: 'true if Service Provider needs to access subscription context'
     serviceResponseObject:
       type: object
-      required: 
-      - attributes
+      required: [attributes]
       properties:
         attributes:
           type: array
@@ -421,11 +411,7 @@ components:
             $ref: '#/components/schemas/serviceFieldMapping'
     requestAttributeObject:
       type: object
-      required:
-        - scope
-        - i18n
-        - apiName
-        - datatype
+      required: [scope, attributeName, apiName, i18n, dataType]
       properties:
         scope:
           type: string
@@ -441,8 +427,8 @@ components:
           type: object
           properties:
             en_US:
-              $ref: '#/components/schemas/attributeStringI18NObject'
-        datatype:
+              $ref: '#/components/schemas/attributeI18nObject'
+        dataType:
           type: string
           example: "string"
         enforcePicklistSelect:
@@ -450,14 +436,10 @@ components:
         autosuggestUrl:
           type: string
           format: uri
-          example: "https://serviceprovider.com/get/auto/suggest"
+          example: "https://serviceprovider.com/get/autosuggest"
     serviceAttributeObject:
       type: object
-      required:
-        - name
-        - apiName
-        - description
-        - datatype
+      required: [attributeName, apiName, dataType, i18n]
       properties:
         attributeName:
           type: string
@@ -469,8 +451,8 @@ components:
           type: object
           properties:
             en_US:
-              $ref: '#/components/schemas/attributeStringI18NObject'
-        datatype:
+              $ref: '#/components/schemas/attributeI18nObject'
+        dataType:
           type: string
           example: "string"
         enforcePicklistSelect:
@@ -478,8 +460,8 @@ components:
         autosuggestUrl:
           type: string
           format: uri
-          example: "https://serviceprovider.com/get/auto/suggest"
-    attributeStringI18NObject:
+          example: "https://serviceprovider.com/get/autosuggest"
+    attributeI18nObject:
       type: object
       properties:
         name:
@@ -506,7 +488,7 @@ components:
             en_US:
               type: string
               example: "This is what this attribute is for"
-        datatype:
+        dataType:
           type: string
           example: integer
     fieldsCallback:
