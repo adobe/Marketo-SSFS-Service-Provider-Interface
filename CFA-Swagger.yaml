@@ -10,7 +10,7 @@ info:
   version: 1.0.0
 externalDocs:
   description: Find out more about Swagger
-  url: http://swagger.io
+  url: https://swagger.io
 servers:
 - url: https://<yourAPI>.com/v1
 tags:
@@ -345,22 +345,31 @@ components:
           enum: ['basic', 'apiKey', 'oauth2']
         realmRequired:
           type: boolean
-          description: Applicable if and only if authType is basic
+          description: Applicable if authType is 'basic'
         headerName:
           type: string
           example: 'x-API-Key'
-          description: Applicable if and only if authType is apiKey
+          description: Applicable if authType is 'apiKey'
         grantType:
           type: string
           enum: ['client_credentials']
-          description: Applicable if and only if authType is oauth2
+          description: Applicable if and only if authType is 'oauth2'
+        grantTypeName:
+          type: string
+          description: grant_type by default. Applicable if authType is 'oauth2'
+        clientIdName:
+          type: string
+          description: client_id by default. Applicable if authType is 'oauth2' and grantType is 'client_credentials'
+        clientSecretName:
+          type: string
+          description: client_secret by default. Applicable if authType is 'oauth2' and grantType is 'client_credentials'
+        refreshTokenEnabled:
+          type: boolean
+          description: Applicable if authType is 'oauth2'
         tokenEndpoint:
           type: string
           format: uri
-          description: Applicable if and only if authType is oauth2
-        refreshTokenEnabled:
-          type: boolean
-          description: Applicable if and only if authType is oauth2
+          description: Applicable if authType is 'oauth2' and refreshTokenEnabled is true
     servicePayloadObject:
       type: object
       properties:
@@ -419,10 +428,10 @@ components:
           enum: [global, flow, response]
         attributeName:
           type: string
-          example: "Key Value"
+          example: "Preference Updated"
         apiName:
           type: string
-          example: "keyValue"
+          example: "prefUpdated"
         i18n:
           type: object
           properties:
@@ -433,20 +442,22 @@ components:
           example: "string"
         enforcePicklistSelect:
           type: boolean
-        autosuggestUrl:
+          description: Whether or not the attribute value has to be exact match of an entry from the picklist
+        picklistUrl:
           type: string
           format: uri
-          example: "https://serviceprovider.com/get/autosuggest"
+          description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
+          example: "https://serviceprovider.com/get/picklist"
     serviceAttributeObject:
       type: object
       required: [attributeName, apiName, dataType, i18n]
       properties:
         attributeName:
           type: string
-          example: "Return Value"
+          example: "Preference Updated"
         apiName:
           type: string
-          example: "returnValue"
+          example: "prefUpdated"
         i18n:
           type: object
           properties:
@@ -457,22 +468,24 @@ components:
           example: "string"
         enforcePicklistSelect:
           type: boolean
-        autosuggestUrl:
+          description: Whether or not the attribute value has to be exact match of an entry from the picklist
+        picklistUrl:
           type: string
           format: uri
-          example: "https://serviceprovider.com/get/autosuggest"
+          description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
+          example: "https://serviceprovider.com/get/picklist"
     attributeI18nObject:
       type: object
       properties:
         name:
           type: string
-          example: "Key Value"
+          example: "Preference Updated"
         description:
           type: string
-          example: "Marketo field to be used as lookup value"
+          example: "Whether or not the preference was updated"
         uiTooltip:
           type: string
-          example: "What Marketo field should be used to find the lookup value?"
+          example: "Whether or not the preference was updated"
     serviceFieldMapping:
       type: object
       properties:
@@ -487,7 +500,7 @@ components:
           properties:
             en_US:
               type: string
-              example: "This is what this attribute is for"
+              example: "This is what this field is for"
         dataType:
           type: string
           example: integer
@@ -509,7 +522,7 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: http://petstore.swagger.io/oauth/dialog
+          authorizationUrl: https://petstore.swagger.io/oauth/dialog
           scopes:
             write:pets: modify pets in your account
             read:pets: read your pets
