@@ -338,54 +338,83 @@ components:
           type: string
           example: 'Use a lookup table to get a value'
     authSettingObject:
+      oneOf:
+        - $ref: '#/components/schemas/basicAuthObject'
+        - $ref: '#/components/schemas/apikeyAuthObject'
+        - $ref: '#/components/schemas/oauth2AuthObject'
+      discriminator:
+        propertyName: authType
+        mapping:
+          basic: '#/components/schemas/basicAuthObject'
+          apiKey: '#/components/schemas/apikeyAuthObject'
+          oauth2: '#/components/schemas/oauth2AuthObject'
+    basicAuthObject:
+      type: object
       required: [authType]
       properties:
         authType:
           type: string
-          enum: ['basic', 'apiKey', 'oauth2']
+          enum: ['basic']
         realmRequired:
           type: boolean
-          description: Applicable if authType is 'basic'
+    apikeyAuthObject:
+      type: object
+      required: [authType]
+      properties:
+        authType:
+          type: string
+          enum: ['apiKey']
         headerName:
           type: string
           example: 'x-API-Key'
-          description: Applicable if authType is 'apiKey'
+    oauth2AuthObject:
+      type: object
+      required: [authType]
+      properties:
+        authType:
+          type: string
+          enum: ['oauth2']
         grantType:
           type: string
           enum: ['client_credentials']
-          description: Applicable if and only if authType is 'oauth2'
         grantTypeName:
           type: string
-          description: grant_type by default. Applicable if authType is 'oauth2'
+          description: grant_type by default
         clientIdName:
           type: string
-          description: client_id by default. Applicable if authType is 'oauth2' and grantType is 'client_credentials'
+          description: client_id by default. Applicable if grantType is 'client_credentials'
         clientSecretName:
           type: string
-          description: client_secret by default. Applicable if authType is 'oauth2' and grantType is 'client_credentials'
+          description: client_secret by default. Applicable if grantType is 'client_credentials'
         refreshTokenEnabled:
           type: boolean
-          description: Applicable if authType is 'oauth2'
         tokenEndpoint:
           type: string
           format: uri
-          description: Applicable if authType is 'oauth2' and refreshTokenEnabled is true
+          description: Applicable if refreshTokenEnabled is true
     servicePayloadObject:
       type: object
       properties:
+        attributes:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/requestAttributeObject'
+              - $ref: '#/components/schemas/attributeObject'
+            discriminator:
+              propertyName: scope
+              mapping:
+                global: '#/components/schemas/requestAttributeObject'
+                flow: '#/components/schemas/requestAttributeObject'
+                response: '#/components/schemas/attributeObject'
         marketoRequest:
           $ref: '#/components/schemas/marketoRequestObject'
         serviceResponse:
           $ref: '#/components/schemas/serviceResponseObject'
     marketoRequestObject:
       type: object
-      required: [attributes]
       properties:
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/requestAttributeObject'
-        fields: 
+        fields:
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
@@ -410,21 +439,30 @@ components:
       type: object
       required: [attributes]
       properties:
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/serviceAttributeObject'
         fields:
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
     requestAttributeObject:
+      allOf:
+        - $ref: '#/components/schemas/attributeObject'
+        - type: object
+          properties:
+            enforcePicklistSelect:
+              type: boolean
+              description: Whether or not the attribute value has to be exact match of an entry from the picklist
+            picklistUrl:
+              type: string
+              format: uri
+              description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
+              example: "https://serviceprovider.com/get/picklist"
+    attributeObject:
       type: object
       required: [scope, attributeName, apiName, i18n, dataType]
       properties:
         scope:
           type: string
-          description: global (admin), flow (marketo outgoing)
+          description: global (admin), flow (marketo request), respnose (service response)
           enum: [global, flow, response]
         attributeName:
           type: string
@@ -440,40 +478,6 @@ components:
         dataType:
           type: string
           example: "string"
-        enforcePicklistSelect:
-          type: boolean
-          description: Whether or not the attribute value has to be exact match of an entry from the picklist
-        picklistUrl:
-          type: string
-          format: uri
-          description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
-          example: "https://serviceprovider.com/get/picklist"
-    serviceAttributeObject:
-      type: object
-      required: [attributeName, apiName, dataType, i18n]
-      properties:
-        attributeName:
-          type: string
-          example: "Preference Updated"
-        apiName:
-          type: string
-          example: "prefUpdated"
-        i18n:
-          type: object
-          properties:
-            en_US:
-              $ref: '#/components/schemas/attributeI18nObject'
-        dataType:
-          type: string
-          example: "string"
-        enforcePicklistSelect:
-          type: boolean
-          description: Whether or not the attribute value has to be exact match of an entry from the picklist
-        picklistUrl:
-          type: string
-          format: uri
-          description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
-          example: "https://serviceprovider.com/get/picklist"
     attributeI18nObject:
       type: object
       properties:
