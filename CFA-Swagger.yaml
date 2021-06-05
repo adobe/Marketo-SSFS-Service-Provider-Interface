@@ -24,7 +24,7 @@ paths:
     post:
       tags:
       - flow action
-      operationId: ""
+      operationId: ''
       requestBody:
         required: true
         content:
@@ -288,7 +288,7 @@ components:
           example: 'lookupTable'
         provider:
           type: string
-          example: "Adobe Marketo Engage"
+          example: 'Adobe Marketo Engage'
         i18n:
           type: object
           properties:
@@ -395,18 +395,6 @@ components:
     servicePayloadObject:
       type: object
       properties:
-        attributes:
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/requestAttributeObject'
-              - $ref: '#/components/schemas/attributeObject'
-            discriminator:
-              propertyName: scope
-              mapping:
-                global: '#/components/schemas/requestAttributeObject'
-                flow: '#/components/schemas/requestAttributeObject'
-                response: '#/components/schemas/attributeObject'
         marketoRequest:
           $ref: '#/components/schemas/marketoRequestObject'
         serviceResponse:
@@ -414,6 +402,14 @@ components:
     marketoRequestObject:
       type: object
       properties:
+        globalAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/requestAttributeObject'
+        flowAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/requestAttributeObject'
         fields:
           type: array
           items:
@@ -422,23 +418,26 @@ components:
           type: boolean
         programContext: 
           type: boolean
-          description: 'true if Service Provider needs to access program context'
+          description: true if Service Provider needs to access program context
         campaignContext: 
           type: boolean
-          description: 'true if Service Provider needs to access campaign context'
+          description: true if Service Provider needs to access campaign context
         triggerContext: 
           type: boolean
-          description: 'true if Service Provider needs to access trigger context'
+          description: true if Service Provider needs to access trigger context
         memberContext: 
           type: boolean
-          description: 'true if Service Provider needs to access member context'
+          description: true if Service Provider needs to access member context
         subscriptionContext: 
           type: boolean
-          description: 'true if Service Provider needs to access subscription context'
+          description: true if Service Provider needs to access subscription context
     serviceResponseObject:
       type: object
-      required: [attributes]
       properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/attributeObject'
         fields:
           type: array
           items:
@@ -455,21 +454,17 @@ components:
               type: string
               format: uri
               description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
-              example: "https://serviceprovider.com/get/picklist"
+              example: 'https://serviceprovider.com/get/picklist'
     attributeObject:
       type: object
-      required: [scope, attributeName, apiName, i18n, dataType]
+      required: [attributeName, apiName, i18n, dataType]
       properties:
-        scope:
-          type: string
-          description: global (admin), flow (marketo request), respnose (service response)
-          enum: [global, flow, response]
         attributeName:
           type: string
-          example: "Preference Updated"
+          example: 'Key Value'
         apiName:
           type: string
-          example: "prefUpdated"
+          example: 'keyValue'
         i18n:
           type: object
           properties:
@@ -477,34 +472,34 @@ components:
               $ref: '#/components/schemas/attributeI18nObject'
         dataType:
           type: string
-          example: "string"
+          example: 'string'
     attributeI18nObject:
       type: object
       properties:
         name:
           type: string
-          example: "Preference Updated"
+          example: 'Key Value'
         description:
           type: string
-          example: "Whether or not the preference was updated"
+          example: 'Marketo field to be used as lookup value'
         uiTooltip:
           type: string
-          example: "Whether or not the preference was updated"
+          example: 'What Marketo field should be used to find the lookup value?'
     serviceFieldMapping:
       type: object
       properties:
         serviceAttributeName:
           type: string
-          example: "serviceAttributeName"
+          example: 'serviceAttributeName'
         suggestedMarketoAttribute:
           type: string
-          example: "marketoAttributeName"
+          example: 'marketoAttributeName'
         description:
           type: object
           properties:
             en_US:
               type: string
-              example: "This is what this field is for"
+              example: 'This is what this field is for'
         dataType:
           type: string
           example: integer
