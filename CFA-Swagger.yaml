@@ -320,8 +320,10 @@ components:
           type: string
           format: uri
           example: https://serviceprovider.com/get/provider_instruction.html
-        servicePayload:
-          $ref: '#/components/schemas/servicePayloadObject'
+        invocationPayloadDef:
+          $ref: '#/components/schemas/invocationPayloadDefObject'
+        callbackPayloadDef:
+          $ref: '#/components/schemas/callbackPayloadDefObject'
     serviceI18nObject:
       type: object
       properties:
@@ -392,24 +394,17 @@ components:
           type: string
           format: uri
           description: Applicable if refreshTokenEnabled is true
-    servicePayloadObject:
-      type: object
-      properties:
-        marketoRequest:
-          $ref: '#/components/schemas/marketoRequestObject'
-        serviceResponse:
-          $ref: '#/components/schemas/serviceResponseObject'
-    marketoRequestObject:
+    invocationPayloadDefObject:
       type: object
       properties:
         globalAttributes:
           type: array
           items:
-            $ref: '#/components/schemas/requestAttributeObject'
+            $ref: '#/components/schemas/invocationAttributeObject'
         flowAttributes:
           type: array
           items:
-            $ref: '#/components/schemas/requestAttributeObject'
+            $ref: '#/components/schemas/invocationAttributeObject'
         fields:
           type: array
           items:
@@ -431,7 +426,7 @@ components:
         subscriptionContext: 
           type: boolean
           description: true if Service Provider needs to access subscription context
-    serviceResponseObject:
+    callbackPayloadDefObject:
       type: object
       properties:
         attributes:
@@ -442,7 +437,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
-    requestAttributeObject:
+    invocationAttributeObject:
       allOf:
         - $ref: '#/components/schemas/attributeObject'
         - type: object
