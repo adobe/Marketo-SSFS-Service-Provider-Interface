@@ -163,15 +163,55 @@ components:
           type: string
           example: 'Mobil 1'
     programMemberContext: #context for a leads flow step choices
-      type: array
-      items:
-        $ref: '#/components/schemas/programMemberObject'
-    programMemberObject:
+      properties:
+        status:
+          type: string
+          example: 'Registered'
+        id:
+          type: int64
+          example: 100000
+        membershipDate:
+          type: string
+          format: date-time
+        reachedSuccess:
+          type: boolean
+        reachedSuccessDate:
+          type: string
+          format: date-time
+        pmcf:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/customStringObject'
+              - $ref: '#/components/schemas/customBooleanObject'
+              - $ref: '#/components/schemas/customNumberObject'
+    customStringObject:
       type: object
       properties:
-        PMCFa:
+        name:
           type: string
-          example: 'xyz'
+          example: 'mealPref_c'
+        value:
+          type: string
+          example: 'vegetarian'
+    customBooleanObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'vip_c'
+        value:
+          type: boolean
+          example: true
+    customNumberObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'regNumber_c'
+        value:
+          type: number
+          example: 14723
     triggeringContext: #context for a leads flow step choices
       type: array
       items:
@@ -420,7 +460,7 @@ components:
         triggerContext: 
           type: boolean
           description: true if Service Provider needs to access trigger context
-        memberContext: 
+        programMemberContext: 
           type: boolean
           description: true if Service Provider needs to access member context
         subscriptionContext: 
