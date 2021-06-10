@@ -10,7 +10,7 @@ info:
   version: 1.0.0
 externalDocs:
   description: Find out more about Swagger
-  url: http://swagger.io
+  url: https://swagger.io
 servers:
 - url: https://<yourAPI>.com/v1
 tags:
@@ -24,7 +24,7 @@ paths:
     post:
       tags:
       - flow action
-      operationId: ""
+      operationId: ''
       requestBody:
         required: true
         content:
@@ -281,82 +281,131 @@ components:
         name: flowCallBack
     serviceDefinition:
       type: object
-      required: 
-      - serviceProvider
-      - name
-      - description
-      - endpoint
-      - authenticationSettings
-      - servicePayload
+      required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, servicePayload]
       properties:
+        apiName:
+          type: string
+          example: 'lookupTable'
         provider:
           type: string
-          example: "ProviderA"
+          example: 'Adobe Marketo Engage'
         i18n:
           type: object
           properties:
             en_US: 
-              $ref: '#/components/schemas/namesObject'
-        apiName:
-          type: string
-          example: 'Change Oil API Name'
+              $ref: '#/components/schemas/serviceI18nObject'
         invocationEndpoint:
           type: string
           format: uri
           example: https://serviceprovider.com/send/action/here 
-        authenticationSettings:
-          type: object
-          $ref: '#/components/schemas/authenticationSettingsObject'
+        statusEndpoint:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/get/status
+        authSetting:
+          $ref: '#/components/schemas/authSettingObject'
         caBundle:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/service/caBundle
+          example: https://serviceprovider.com/get/caBundle
         serviceIcon:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/service/icon.jpeg
+          example: https://serviceprovider.com/get/service.ico
         brandIcon:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/brand/icon.jpeg
-        providerInstructions:
+          example: https://serviceprovider.com/get/brand.ico
+        providerInstruction:
           type: string
           format: uri
-          example: https://serviceprovider.com/get/provider/instructions
-        servicePayload:
-          $ref: '#/components/schemas/servicePayloadObject'
-    namesObject:
+          example: https://serviceprovider.com/get/provider_instruction.html
+        invocationPayloadDef:
+          $ref: '#/components/schemas/invocationPayloadDefObject'
+        callbackPayloadDef:
+          $ref: '#/components/schemas/callbackPayloadDefObject'
+    serviceI18nObject:
       type: object
       properties:
         name:
           type: string
-          example: 'Change Oil'
+          example: 'Lookup Table'
         filterName:
           type: string
-          example: 'Change Oil Filter Name'
+          example: 'Lookup Table was Used'
         triggerName:
           type: string
-          example: 'Change Oil Trigger Name'
+          example: 'Use Lookup Table'
         description:
           type: string
-          example: 'I Change Car Oil'
-    servicePayloadObject:
+          example: 'Use a lookup table to get a value'
+    authSettingObject:
+      oneOf:
+        - $ref: '#/components/schemas/basicAuthObject'
+        - $ref: '#/components/schemas/apikeyAuthObject'
+        - $ref: '#/components/schemas/oauth2AuthObject'
+      discriminator:
+        propertyName: authType
+        mapping:
+          basic: '#/components/schemas/basicAuthObject'
+          apiKey: '#/components/schemas/apikeyAuthObject'
+          oauth2: '#/components/schemas/oauth2AuthObject'
+    basicAuthObject:
+      type: object
+      required: [authType]
+      properties:
+        authType:
+          type: string
+          enum: ['basic']
+        realmRequired:
+          type: boolean
+    apikeyAuthObject:
+      type: object
+      required: [authType]
+      properties:
+        authType:
+          type: string
+          enum: ['apiKey']
+        headerName:
+          type: string
+          example: 'x-API-Key'
+    oauth2AuthObject:
+      type: object
+      required: [authType]
+      properties:
+        authType:
+          type: string
+          enum: ['oauth2']
+        grantType:
+          type: string
+          enum: ['client_credentials']
+        grantTypeName:
+          type: string
+          description: grant_type by default
+        clientIdName:
+          type: string
+          description: client_id by default. Applicable if grantType is 'client_credentials'
+        clientSecretName:
+          type: string
+          description: client_secret by default. Applicable if grantType is 'client_credentials'
+        refreshTokenEnabled:
+          type: boolean
+        tokenEndpoint:
+          type: string
+          format: uri
+          description: Applicable if refreshTokenEnabled is true
+    invocationPayloadDefObject:
       type: object
       properties:
-        marketoRequest:
-          $ref: '#/components/schemas/marketoRequestObject'
-        serviceResponse:
-          $ref: '#/components/schemas/serviceResponseObject'
-    marketoRequestObject:
-      type: object
-      required: 
-      - attributes
-      properties:
-        attributes:
+        globalAttributes:
           type: array
           items:
-            $ref: '#/components/schemas/requestAttributeObject'
-        fields: 
+            $ref: '#/components/schemas/invocationAttributeObject'
+        flowAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/invocationAttributeObject'
+        fields:
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
@@ -364,165 +413,89 @@ components:
           type: boolean
         programContext: 
           type: boolean
-          description: 'true if customer wants program context'
+          description: true if Service Provider needs to access program context
         campaignContext: 
           type: boolean
-          description: 'true if customer wants campaign context'
+          description: true if Service Provider needs to access campaign context
         triggerContext: 
           type: boolean
-          description: 'true if customer wants trigger context'
+          description: true if Service Provider needs to access trigger context
         memberContext: 
           type: boolean
-          description: 'true if customer wants member context'
+          description: true if Service Provider needs to access member context
         subscriptionContext: 
           type: boolean
-          description: 'true if customer wants subscription context'
-    serviceResponseObject:
+          description: true if Service Provider needs to access subscription context
+    callbackPayloadDefObject:
       type: object
-      required: 
-      - attributes
       properties:
         attributes:
           type: array
           items:
-            $ref: '#/components/schemas/serviceAttributeObject'
+            $ref: '#/components/schemas/attributeObject'
         fields:
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
-    requestAttributeObject:
+    invocationAttributeObject:
+      allOf:
+        - $ref: '#/components/schemas/attributeObject'
+        - type: object
+          properties:
+            enforcePicklistSelect:
+              type: boolean
+              description: Whether or not the attribute value has to be exact match of an entry from the picklist
+            picklistUrl:
+              type: string
+              format: uri
+              description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
+              example: 'https://serviceprovider.com/get/picklist'
+    attributeObject:
       type: object
-      required:
-        - scope
-        - name
-        - apiName
-        - description
-        - datatype
+      required: [attributeName, apiName, i18n, dataType]
       properties:
-        scope:
-          type: string
-          description: global (admin), flow (marketo outgoing)
-          enum: [global, flow, response]
         attributeName:
           type: string
-          example: "Oil Brand"
+          example: 'Key Value'
         apiName:
           type: string
-          example: "oilBrand"
+          example: 'keyValue'
         i18n:
           type: object
           properties:
             en_US:
-              $ref: '#/components/schemas/attributeStringI18NObject'
-        datatype:
+              $ref: '#/components/schemas/attributeI18nObject'
+        dataType:
           type: string
-          example: "integer"
-        enforcePicklistSelect:
-          type: boolean
-        autosuggestUrl:
-          type: string
-          format: uri
-          example: "https://serviceprovider.com/get/auto/suggest"
-    serviceAttributeObject:
-      type: object
-      required:
-        - name
-        - apiName
-        - description
-        - datatype
-      properties:
-        attributeName:
-          type: string
-          example: "Oil Brand"
-        apiName:
-          type: string
-          example: "oilBrand"
-        i18n:
-          type: object
-          properties:
-            en_US:
-              $ref: '#/components/schemas/attributeStringI18NObject'
-        datatype:
-          type: string
-          example: "integer"
-        enforcePicklistSelect:
-          type: boolean
-        autosuggestUrl:
-          type: string
-          format: uri
-          example: "https://serviceprovider.com/get/auto/suggest"
-    attributeStringI18NObject:
+          example: 'string'
+    attributeI18nObject:
       type: object
       properties:
         name:
           type: string
-          example: "Oil Brand"
+          example: 'Key Value'
         description:
           type: string
-          example: "The oil brand used"
+          example: 'Marketo field to be used as lookup value'
         uiTooltip:
           type: string
-          example: "what kind of oil you want to use?"
-    authenticationSettingsObject:
-      type: object
-      required: [authType]
-      properties:
-        authType: 
-          type: string
-          enum: [basic, clientCredentials, apiKey]
-        basic: 
-          $ref: '#/components/schemas/basicAuthObject'
-        clientCredentials: 
-          $ref: '#/components/schemas/clientCredentialsObject'
-        apiKey: 
-          $ref: '#/components/schemas/apiKeyObject'
-    basicAuthObject:
-      type: object
-      properties:
-          realmRequired: 
-            type: boolean
-    apiKeyObject:
-      type: object
-      properties:
-        headerName: 
-          type: string
-          example: "x-API-Key"
-    clientCredentialsObject:
-      type: object
-      required: [tokenEndpoint]
-      properties:
-        tokenEndpoint: 
-          type: string
-          example: "https://example.com/oauth2/token"
-          format: uri
-        refreshTokenEnabled: 
-          type: boolean
-        grantTypeName: 
-          type: string
-          example: "grant_type"
-        clientIdName: 
-          type: string
-          example: "client_id"
-        clientSecretName: 
-          type: string
-          example: "client_secret"
+          example: 'What Marketo field should be used to find the lookup value?'
     serviceFieldMapping:
       type: object
       properties:
         serviceAttributeName:
           type: string
-          example: "serviceAttributeName"
+          example: 'serviceAttributeName'
         suggestedMarketoAttribute:
           type: string
-          example: "marketoAttributeName"
+          example: 'marketoAttributeName'
         description:
           type: object
           properties:
             en_US:
               type: string
-              example: "This is what this attribure is for"
-          
-        datatype:
+              example: 'This is what this field is for'
+        dataType:
           type: string
           example: integer
     fieldsCallback:
@@ -543,7 +516,7 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: http://petstore.swagger.io/oauth/dialog
+          authorizationUrl: https://petstore.swagger.io/oauth/dialog
           scopes:
             write:pets: modify pets in your account
             read:pets: read your pets
