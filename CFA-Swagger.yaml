@@ -150,28 +150,63 @@ components:
     program: # program identifiers / runtime information
       type: object
     flowStepContext: #context for a leads flow step choices
-      type: array
-      items:
-        $ref: '#/components/schemas/flowStepObject'
-    flowStepObject:
-      type: object
-      properties:
-        Car:
-          type: string
-          example: 'Honda CRV'
-        Oil Brand:
-          type: string
-          example: 'Mobil 1'
+        type: array
+        items:
+          anyOf:
+            - $ref: '#/components/schemas/stringFieldObject'
+            - $ref: '#/components/schemas/booleanFieldObject'
+            - $ref: '#/components/schemas/numberFieldObject'
     programMemberContext: #context for a leads flow step choices
-      type: array
-      items:
-        $ref: '#/components/schemas/programMemberObject'
-    programMemberObject:
       type: object
       properties:
-        PMCFa:
+        status:
           type: string
-          example: 'xyz'
+          example: 'Registered'
+        id:
+          type: number
+          example: 100000
+        membershipDate:
+          type: string
+          format: date-time
+        reachedSuccess:
+          type: boolean
+        reachedSuccessDate:
+          type: string
+          format: date-time
+        pmcf:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/stringFieldObject'
+              - $ref: '#/components/schemas/booleanFieldObject'
+              - $ref: '#/components/schemas/numberFieldObject'
+    stringFieldObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'mealPref_c'
+        value:
+          type: string
+          example: 'vegetarian'
+    booleanFieldObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'vip_c'
+        value:
+          type: boolean
+          example: true
+    numberFieldObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'regNumber_c'
+        value:
+          type: number
+          example: 14723
     triggeringContext: #context for a leads flow step choices
       type: array
       items:
@@ -420,7 +455,7 @@ components:
         triggerContext: 
           type: boolean
           description: true if Service Provider needs to access trigger context
-        memberContext: 
+        programMemberContext: 
           type: boolean
           description: true if Service Provider needs to access member context
         subscriptionContext: 
