@@ -150,19 +150,14 @@ components:
     program: # program identifiers / runtime information
       type: object
     flowStepContext: #context for a leads flow step choices
-      type: array
-      items:
-        $ref: '#/components/schemas/flowStepObject'
-    flowStepObject:
-      type: object
-      properties:
-        Car:
-          type: string
-          example: 'Honda CRV'
-        Oil Brand:
-          type: string
-          example: 'Mobil 1'
+        type: array
+        items:
+          anyOf:
+            - $ref: '#/components/schemas/stringFieldObject'
+            - $ref: '#/components/schemas/booleanFieldObject'
+            - $ref: '#/components/schemas/numberFieldObject'
     programMemberContext: #context for a leads flow step choices
+      type: object
       properties:
         status:
           type: string
@@ -182,10 +177,10 @@ components:
           type: array
           items:
             anyOf:
-              - $ref: '#/components/schemas/customStringObject'
-              - $ref: '#/components/schemas/customBooleanObject'
+              - $ref: '#/components/schemas/stringFieldObject'
+              - $ref: '#/components/schemas/booleanFieldObject'
               - $ref: '#/components/schemas/customNumberObject'
-    customStringObject:
+    stringFieldObject:
       type: object
       properties:
         name:
@@ -194,7 +189,7 @@ components:
         value:
           type: string
           example: 'vegetarian'
-    customBooleanObject:
+    booleanFieldObject:
       type: object
       properties:
         name:
