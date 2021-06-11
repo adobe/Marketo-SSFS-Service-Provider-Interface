@@ -163,7 +163,7 @@ components:
           type: string
           example: 'Registered'
         id:
-          type: int64
+          type: number
           example: 100000
         membershipDate:
           type: string
@@ -179,7 +179,7 @@ components:
             anyOf:
               - $ref: '#/components/schemas/stringFieldObject'
               - $ref: '#/components/schemas/booleanFieldObject'
-              - $ref: '#/components/schemas/customNumberObject'
+              - $ref: '#/components/schemas/numberFieldObject'
     stringFieldObject:
       type: object
       properties:
@@ -198,7 +198,7 @@ components:
         value:
           type: boolean
           example: true
-    customNumberObject:
+    numberFieldObject:
       type: object
       properties:
         name:
