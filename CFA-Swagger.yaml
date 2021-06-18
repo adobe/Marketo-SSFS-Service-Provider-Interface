@@ -316,7 +316,7 @@ components:
         name: flowCallBack
     serviceDefinition:
       type: object
-      required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, servicePayload]
+      required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
       properties:
         apiName:
           type: string
@@ -355,6 +355,9 @@ components:
           type: string
           format: uri
           example: https://serviceprovider.com/get/provider_instruction.html
+        primaryAttribute:
+          type: string
+          description: API name of the attribute that describes the primary asset, should match one from or callback attribute list
         invocationPayloadDef:
           $ref: '#/components/schemas/invocationPayloadDefObject'
         callbackPayloadDef:
@@ -388,6 +391,7 @@ components:
     basicAuthObject:
       type: object
       required: [authType]
+      description: See RFC 7617
       properties:
         authType:
           type: string
@@ -407,6 +411,7 @@ components:
     oauth2AuthObject:
       type: object
       required: [authType]
+      description: See RFC 6749
       properties:
         authType:
           type: string
@@ -477,6 +482,9 @@ components:
         - $ref: '#/components/schemas/attributeObject'
         - type: object
           properties:
+            required:
+              type: boolean
+              description: Whether or not this attribute is required by the service
             enforcePicklistSelect:
               type: boolean
               description: Whether or not the attribute value has to be exact match of an entry from the picklist
@@ -487,11 +495,8 @@ components:
               example: 'https://serviceprovider.com/get/picklist'
     attributeObject:
       type: object
-      required: [attributeName, apiName, i18n, dataType]
+      required: [apiName, i18n, dataType]
       properties:
-        attributeName:
-          type: string
-          example: 'Key Value'
         apiName:
           type: string
           example: 'keyValue'
