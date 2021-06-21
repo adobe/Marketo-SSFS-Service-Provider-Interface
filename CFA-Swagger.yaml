@@ -41,9 +41,6 @@ paths:
                   application/json:
                     schema:
                       $ref: '#/components/schemas/flowCallBack'
-                  application/xml:
-                    schema:
-                      $ref: '#/components/schemas/flowCallBack'
               responses:
                 405:
                   description: Invalid input
@@ -150,12 +147,8 @@ components:
     program: # program identifiers / runtime information
       type: object
     flowStepContext: #context for a leads flow step choices
-        type: array
-        items:
-          anyOf:
-            - $ref: '#/components/schemas/stringFieldObject'
-            - $ref: '#/components/schemas/booleanFieldObject'
-            - $ref: '#/components/schemas/numberFieldObject'
+      type: object
+      additionalProperties: true
     programMemberContext: #context for a leads flow step choices
       type: object
       properties:
@@ -174,120 +167,56 @@ components:
           type: string
           format: date-time
         pmcf:
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/stringFieldObject'
-              - $ref: '#/components/schemas/booleanFieldObject'
-              - $ref: '#/components/schemas/numberFieldObject'
-    stringFieldObject:
-      type: object
-      properties:
-        name:
-          type: string
-          example: 'mealPref_c'
-        value:
-          type: string
-          example: 'vegetarian'
-    booleanFieldObject:
-      type: object
-      properties:
-        name:
-          type: string
-          example: 'vip_c'
-        value:
-          type: boolean
-          example: true
-    numberFieldObject:
-      type: object
-      properties:
-        name:
-          type: string
-          example: 'regNumber_c'
-        value:
-          type: number
-          example: 14723
+          type: object
+          additionalProperties: true
     triggeringContext: #context for a leads flow step choices
-      type: array
-      items:
-        $ref: '#/components/schemas/triggeringObject'
-    triggeringObject:
       type: object
       properties:
-        field:
+        name:
           type: string
-          example: 'value'
+          description: Name of the primary asset which triggered the invoking campaign
+          example: "Lead-gen Form"
+        triggerName:
+          type: string
+          description: Type of event which triggered the invoking campaign
+          example: "Filled Out Form"
     objectData:
       required:
       - objectType
       - objectData
+      - leadContext
       type: object
       properties:
         objectType: 
           type: string
           example: lead
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              example: 123
-            leadContext:
-              $ref: '#/components/schemas/fieldsCallback'
+        leadContext:
+          $ref: '#/components/schemas/leadData'
         flowStepContext:
           $ref: '#/components/schemas/flowStepContext'
         programMemberContext:
           $ref: '#/components/schemas/programMemberContext'
         triggeringContext:
           $ref: '#/components/schemas/triggeringContext'
-        
-    defaultValues:
+    callbackData:
+      type: object
       required:
-      - objectType
-      - fields
-      type: object
+      - leadData
       properties:
-        objectType: 
-          type: string
-          example: lead
-        fields:
+        activityData:
           type: object
-          properties: 
-            updateFields:
-              $ref: '#/components/schemas/fieldsObject'
-            loggingFields:
-              $ref: '#/components/schemas/fieldsObject'
-    objectDataCallBack:
+          additionalProperties: true
+        leadData:
+          $ref: '#/components/schemas/leadData'
+    leadData:
+      type: object
       required:
-      - objectType
-      - objectData
-      type: object
+      - id
       properties:
-        objectType: 
-          type: string
-          example: lead
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              example: 123
-            fields:
-              type: object
-              properties: 
-                updateFields:
-                  $ref: '#/components/schemas/fieldsObject'
-                loggingFields:
-                  $ref: '#/components/schemas/fieldsObject'
-    fieldsObject:
-      type: object
-      properties:
-        fieldName1:
-          type: string
-          example: 'fieldValue1'
-        fieldName2:
-          type: string
-          example: 'fieldValue2'
+        id:
+          type: integer
+          format: int64
+      additionalProperties: true
     flowCallBack:
       required:
       - munchkinId
@@ -305,15 +234,19 @@ components:
           type: string
           format: date-time
         defaultValues:
-          type: array
-          items:
-            $ref: '#/components/schemas/defaultValues'
+          description: If a value for a given record is not set in the objectData array, then it will default to the value set here if there is one
+          type: object
+          properties:
+            leadDefaults:
+              type: object
+              additionalProperties: true
+            activityDefaults:
+              type: object
+              additionalProperties: true
         objectData:
           type: array
           items:
-            $ref: '#/components/schemas/objectDataCallBack'
-      xml:
-        name: flowCallBack
+            $ref: '#/components/schemas/callbackData'
     serviceDefinition:
       type: object
       required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
