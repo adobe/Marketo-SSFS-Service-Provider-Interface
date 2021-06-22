@@ -11,8 +11,6 @@ info:
 externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
-servers:
-  description: Servers where your API is deployed.  If populated, marketo will use the first server provided, if not, the hostname will be inferred from the openAPI spec location
 tags:
 - name: flow action
   description: your service action
@@ -21,6 +19,7 @@ tags:
     url: todo://marketo.docs/link
 paths:
   /submitAsyncAction:
+    description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
     post:
       tags:
       - flow action
@@ -74,6 +73,7 @@ paths:
             Internal Server Error:
             - Invoking the service failed for an unknown reason
   /getServiceDefinition:
+    description: Defines metadata used to exchange data between Marketo and service provider
     get: #update to get
       summary: Returns a service definition for user install
       responses:
@@ -94,22 +94,23 @@ components:
       - callbackUrl
       type: object
       properties:
-        id: 
+        token: 
+          description: One-time use access token for submitting callback data to Marketo
           type: string
           format: uuid
         batchid:
+          description: ID of the marketo campaign run invoking the service
           type: string
           format: uuid
         campaignId:
+          description: ID of the campaign invoking the service
           type: integer
           format: int32
         callbackUrl:   # Callback URL
+          description: URL of the callback to submit data back to
           type: string
           format: uri
           example: https://adobe.com/send/callback/here
-        type:
-          type: string
-          example: 'customFlow'
         context: 
           $ref: '#/components/schemas/context'
         objectData:
@@ -117,6 +118,7 @@ components:
           items:
             $ref: '#/components/schemas/objectData'
     context:
+      description: Object containing contexts to be used for processing
       type: object
       required:
       - subscription
@@ -130,6 +132,7 @@ components:
         program: 
           $ref: '#/components/schemas/program'
     subscription: # subscription identifiers
+      description: Identifiers for Marketo subscription.  Can be used to locate invoking instance for REST API calls
       type: object
       required:
       - munchkinId
@@ -141,35 +144,47 @@ components:
           type: string
           example: 'customerPrefix'
     admin: # admin configuration of service
+      description: Global configuration data as defined by Marketo administrator
       type: object
     campaign: # campaign identifiers / runtime information
+      description: Data related to the invoking Smart Campaign
       type: object
     program: # program identifiers / runtime information
+      description: Data related to the parent program of the invoking smart campaign.  May be empty even if required by service provider, if the smart campaign is not housed within a program
       type: object
     flowStepContext: #context for a leads flow step choices
+      description: Data related to specific invocation of the flow action.  Property list is defined by 'flow' type service attributes in Service Definition.  Values will be based on inputs given by Marketo users in Smart Campaign UI
       type: object
       additionalProperties: true
     programMemberContext: #context for a leads flow step choices
+      description: Data related to program membership, including status, success, and program-member custom field data.  May be empty even if required if the invoking smart campaign is not housed within a program, or the lead record has not been made a member of the program
       type: object
       properties:
         status:
+          description: Status in program.  Possible values are defined in the program's channel
           type: string
           example: 'Registered'
         id:
           type: number
+          format: int64
           example: 100000
         membershipDate:
+          description: Date when lead became a program member
           type: string
           format: date-time
         reachedSuccess:
+          description: Whether the lead is in a status with the success property true, as defined in the program Channel
           type: boolean
         reachedSuccessDate:
+          description: Date when lead first reached a success status in the program
           type: string
           format: date-time
         pmcf:
+          description: Object containing Program Member Custom fields
           type: object
           additionalProperties: true
     triggeringContext: #context for a leads flow step choices
+      description: Data related to the event which triggered the invoking campaign
       type: object
       properties:
         name:
@@ -181,15 +196,17 @@ components:
           description: Type of event which triggered the invoking campaign
           example: "Filled Out Form"
     objectData:
+      description: Contains lead-data and lead-specific context.  Submitted by Marketo to service.
       required:
       - objectType
-      - objectData
       - leadContext
       type: object
       properties:
         objectType: 
           type: string
           example: lead
+          enum:
+          - lead
         leadContext:
           $ref: '#/components/schemas/leadData'
         flowStepContext:
@@ -204,9 +221,11 @@ components:
       - leadData
       properties:
         activityData:
+          description: Object used to submit activity data for a single lead.  Attributes defined as 'response' attributes may be included to write to the activity resulting from invocation
           type: object
           additionalProperties: true
         leadData:
+          description: Object used to submit data back to lead record.  Included fields must be included in service definition unless userDrivenMapping is false.  Fields must also be mapped and active in Incoming Fields menu for write to succeed.
           $ref: '#/components/schemas/leadData'
     leadData:
       type: object
@@ -234,13 +253,15 @@ components:
           type: string
           format: date-time
         defaultValues:
-          description: If a value for a given record is not set in the objectData array, then it will default to the value set here if there is one
+          description: If a value for a given record is not set in the objectData array, then it will default to the value set in the corresponding defaults object here if there is one
           type: object
           properties:
             leadDefaults:
+              description: Default values for lead fields
               type: object
               additionalProperties: true
             activityDefaults:
+              description: Default values for activity attributes
               type: object
               additionalProperties: true
         objectData:
@@ -248,16 +269,20 @@ components:
           items:
             $ref: '#/components/schemas/callbackData'
     serviceDefinition:
+      description: Used to describe configuration and metadata including fields expected during invocation & callback, user inputs on Marketo-side, and other important metadata
       type: object
       required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
       properties:
         apiName:
+          description: Default identifier for service and activity.  Users installing multiple service with the same apiName will be prompted to resolve collision by inputting a custom name during installation
           type: string
           example: 'lookupTable'
         provider:
+          description: Name of the service provider, typically the organization offering the service
           type: string
           example: 'Adobe Marketo Engage'
         i18n:
+          description: Used to provide internationalized strings
           type: object
           properties:
             en_US: 
@@ -277,10 +302,12 @@ components:
           format: uri
           example: https://serviceprovider.com/get/caBundle
         serviceIcon:
+          description: Icon to represent the individual service.  Used to represent the service flow step in the Marketo Campaign UI
           type: string
           format: uri
           example: https://serviceprovider.com/get/service.ico
         brandIcon:
+          description: Icon to represent the service provider.  Used to represent the service provider in the Service Providers Admin Menu
           type: string
           format: uri
           example: https://serviceprovider.com/get/brand.ico
@@ -290,7 +317,7 @@ components:
           example: https://serviceprovider.com/get/provider_instruction.html
         primaryAttribute:
           type: string
-          description: API name of the attribute that describes the primary asset, should match one from or callback attribute list
+          description: API name of the attribute that describes the primary asset. This must match the name of an attribute from the flow or callback attribute list
         invocationPayloadDef:
           $ref: '#/components/schemas/invocationPayloadDefObject'
         callbackPayloadDef:
@@ -368,21 +395,26 @@ components:
           format: uri
           description: Applicable if refreshTokenEnabled is true
     invocationPayloadDefObject:
+      description: Describes lead field mappings, flow & global attributes, and contexts required by the service during invocation
       type: object
       properties:
         globalAttributes:
+          description: Describes expected global user inputs.  Global attributes can be set during installation or from the Service Provider admin menu.  Global attributes will be included in every invocation if set.
           type: array
           items:
             $ref: '#/components/schemas/invocationAttributeObject'
         flowAttributes:
+          description: Describes expected flow step inputs.  Flow attributes are set for each individual instance of a flow step and are sent per-lead in the flowStepContext object.
           type: array
           items:
             $ref: '#/components/schemas/invocationAttributeObject'
         fields:
+          description: Field mappings needed for invocation.  Fields which are mapped in Marketo are sent in the leadContext object.  If userDrivenMapping is 'true', the contents of this array will be ignored
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
         userDrivenMapping:
+          description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
           type: boolean
         programContext: 
           type: boolean
@@ -400,6 +432,7 @@ components:
           type: boolean
           description: true if Service Provider needs to access subscription context
     callbackPayloadDefObject:
+      description: Describes lead field mappings, and response attributes which can be written to during the callback
       type: object
       properties:
         attributes:
@@ -410,6 +443,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/serviceFieldMapping'
+        userDrivenMapping:
+          description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
+          type: boolean
     invocationAttributeObject:
       allOf:
         - $ref: '#/components/schemas/attributeObject'
@@ -457,29 +493,23 @@ components:
       type: object
       properties:
         serviceAttributeName:
+          description: Name of the attribute as sent during invocation or callback.
           type: string
           example: 'serviceAttributeName'
         suggestedMarketoAttribute:
+          description: If this matches the apiName and data type of a Marketo lead field, that field will be populated as the default choice for the mapping during service installation
           type: string
           example: 'marketoAttributeName'
         description:
+          description: Description presented to the user for the mapping during installation.
           type: object
           properties:
             en_US:
               type: string
-              example: 'This is what this field is for'
+              example: This is the status field that the service will use to indicate a lead's relative status in Marketo
         dataType:
           type: string
           example: integer
-    fieldsCallback:
-      type: object
-      properties:
-        fieldName1:
-          type: string
-          example: 'fieldValue1'
-        fieldName2:
-          type: string
-          example: 'fieldValue2'
           
         
           
