@@ -19,7 +19,7 @@ tags:
     url: todo://marketo.docs/link
 paths:
   /submitAsyncAction:
-    description: 'Lead and context data is submitted through this endpoint.  Results should be submitted through callback'
+    description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
     post:
       tags:
       - flow action
@@ -95,7 +95,7 @@ components:
       type: object
       properties:
         token: 
-          description: Access token for submitting callback data to Marketo
+          description: One-time use access token for submitting callback data to Marketo
           type: string
           format: uuid
         batchid:
@@ -107,7 +107,7 @@ components:
           type: integer
           format: int32
         callbackUrl:   # Callback URL
-          description: URL of the callback to submit data bacj ti
+          description: URL of the callback to submit data back to
           type: string
           format: uri
           example: https://adobe.com/send/callback/here
@@ -274,11 +274,11 @@ components:
       required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
       properties:
         apiName:
-          description: Default identifier for service and activity.  Users installing multiple service withs the same apiName will be prompted to resolve collision by inputting a custom name during installation
+          description: Default identifier for service and activity.  Users installing multiple service with the same apiName will be prompted to resolve collision by inputting a custom name during installation
           type: string
           example: 'lookupTable'
         provider:
-          description: Name of the service provider, typically the organization offering the service.
+          description: Name of the service provider, typically the organization offering the service
           type: string
           example: 'Adobe Marketo Engage'
         i18n:
