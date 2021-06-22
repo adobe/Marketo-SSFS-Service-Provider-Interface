@@ -7,12 +7,12 @@ info:
   license:
     name: Marketo API License
     url: https://developers.marketo.com/api-license/
-  version: 1.0.0
+  version: 0.0.1
 externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
 servers:
-- url: https://<yourAPI>.com/v1
+  description: Servers where your API is deployed.  If populated, marketo will use the first server provided, if not, the hostname will be inferred from the openAPI spec location
 tags:
 - name: flow action
   description: your service action
