@@ -12,17 +12,17 @@ externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
 tags:
-- name: flow action
-  description: your service action
-  externalDocs:
-    description: Find out more
-    url: todo://marketo.docs/link
+  - name: flow action
+    description: your service action
+    externalDocs:
+      description: Find out more
+      url: todo://marketo.docs/link
 paths:
   /submitAsyncAction:
     description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
     post:
       tags:
-      - flow action
+        - flow action
       operationId: ''
       requestBody:
         required: true
@@ -31,9 +31,16 @@ paths:
             schema:
               $ref: '#/components/schemas/async'
       callbacks: # Callback definition
-        selfServiceFlowComplete: 
+        selfServiceFlowComplete:
           '{$request.body#/flowComplete}':
-             post:
+            post:
+              parameters:
+                - in: header
+                  name: x-api-key
+                  schema:
+                    type: string
+                    format: uuid
+                  required: true
               requestBody:
                 description: Flow Action return data for post processing
                 content:
@@ -49,7 +56,7 @@ paths:
                   content: {}
       responses:
         201:
-          description: |- 
+          description: |-
             Accepted:
             - Webhook created
         400:
@@ -81,25 +88,29 @@ paths:
           description: Service Install Metadata
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/serviceDefinition'
 components:
   schemas:
     async:
       required:
-      - id
-      - batchid
-      - campaignId
-      - type
-      - callbackUrl
+        - id
+        - batchid
+        - campaignId
+        - type
+        - callbackUrl
       type: object
       properties:
-        token: 
+        token:
           description: One-time use access token for submitting callback data to Marketo
           type: string
           format: uuid
         batchid:
           description: ID of the marketo campaign run invoking the service
+          type: string
+          format: uuid
+        apiCallBackKey:
+          description: API key to be used in the callback header
           type: string
           format: uuid
         campaignId:
@@ -111,7 +122,7 @@ components:
           type: string
           format: uri
           example: https://adobe.com/send/callback/here
-        context: 
+        context:
           $ref: '#/components/schemas/context'
         objectData:
           type: array
@@ -121,21 +132,21 @@ components:
       description: Object containing contexts to be used for processing
       type: object
       required:
-      - subscription
+        - subscription
       properties:
-        subscription: 
+        subscription:
           $ref: '#/components/schemas/subscription'
-        admin: 
+        admin:
           $ref: '#/components/schemas/admin'
-        campaign: 
+        campaign:
           $ref: '#/components/schemas/campaign'
-        program: 
+        program:
           $ref: '#/components/schemas/program'
     subscription: # subscription identifiers
       description: Identifiers for Marketo subscription.  Can be used to locate invoking instance for REST API calls
       type: object
       required:
-      - munchkinId
+        - munchkinId
       properties:
         munchkinId:
           type: string
@@ -198,15 +209,15 @@ components:
     objectData:
       description: Contains lead-data and lead-specific context.  Submitted by Marketo to service.
       required:
-      - objectType
-      - leadContext
+        - objectType
+        - leadContext
       type: object
       properties:
-        objectType: 
+        objectType:
           type: string
           example: lead
           enum:
-          - lead
+            - lead
         leadContext:
           $ref: '#/components/schemas/leadData'
         flowStepContext:
@@ -218,7 +229,7 @@ components:
     callbackData:
       type: object
       required:
-      - leadData
+        - leadData
       properties:
         activityData:
           description: Object used to submit activity data for a single lead.  Attributes defined as 'response' attributes may be included to write to the activity resulting from invocation
@@ -230,7 +241,7 @@ components:
     leadData:
       type: object
       required:
-      - id
+        - id
       properties:
         id:
           type: integer
@@ -238,9 +249,9 @@ components:
       additionalProperties: true
     flowCallBack:
       required:
-      - munchkinId
-      - token
-      - time
+        - munchkinId
+        - token
+        - time
       type: object
       properties:
         munchkinId:
@@ -285,12 +296,12 @@ components:
           description: Used to provide internationalized strings
           type: object
           properties:
-            en_US: 
+            en_US:
               $ref: '#/components/schemas/serviceI18nObject'
         invocationEndpoint:
           type: string
           format: uri
-          example: https://serviceprovider.com/send/action/here 
+          example: https://serviceprovider.com/send/action/here
         statusEndpoint:
           type: string
           format: uri
@@ -416,19 +427,19 @@ components:
         userDrivenMapping:
           description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
           type: boolean
-        programContext: 
+        programContext:
           type: boolean
           description: true if Service Provider needs to access program context
-        campaignContext: 
+        campaignContext:
           type: boolean
           description: true if Service Provider needs to access campaign context
-        triggerContext: 
+        triggerContext:
           type: boolean
           description: true if Service Provider needs to access trigger context
-        programMemberContext: 
+        programMemberContext:
           type: boolean
           description: true if Service Provider needs to access member context
-        subscriptionContext: 
+        subscriptionContext:
           type: boolean
           description: true if Service Provider needs to access subscription context
     callbackPayloadDefObject:
@@ -510,11 +521,11 @@ components:
         dataType:
           type: string
           example: integer
-          
-        
-          
+
+
+
   securitySchemes:
-    #need to determine what security schemes are needed. 
+    #need to determine what security schemes are needed.
     petstoreAuth:
       type: oauth2
       flows:
