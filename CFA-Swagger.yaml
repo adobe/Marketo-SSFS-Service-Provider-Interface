@@ -7,7 +7,7 @@ info:
   license:
     name: Marketo API License
     url: https://developers.marketo.com/api-license/
-  version: 0.0.1
+  version: 0.1.0
 externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
@@ -195,11 +195,18 @@ components:
           type: string
           description: Type of event which triggered the invoking campaign
           example: "Filled Out Form"
+    objectContext:
+      oneOf:
+        - $ref: '#/components/schemas/leadData'
+      discriminator:
+        propertyName: authType
+        mapping:
+          lead: '#/components/schemas/leadData'
     objectData:
       description: Contains lead-data and lead-specific context.  Submitted by Marketo to service.
       required:
       - objectType
-      - leadContext
+      - objectContext
       type: object
       properties:
         objectType: 
@@ -207,8 +214,8 @@ components:
           example: lead
           enum:
           - lead
-        leadContext:
-          $ref: '#/components/schemas/leadData'
+        objectContext:
+          $ref: '#/components/schemas/objectContext'
         flowStepContext:
           $ref: '#/components/schemas/flowStepContext'
         programMemberContext:
