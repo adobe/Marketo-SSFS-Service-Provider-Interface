@@ -275,15 +275,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/callbackData'
-    fieldsCallback:
-      type: object
-      properties:
-        fieldName1:
-          type: string
-          example: 'fieldValue1'
-        fieldName2:
-          type: string
-          example: 'fieldValue2'
     serviceDefinition:
       description: Used to describe configuration and metadata including fields expected during invocation & callback, user inputs on Marketo-side, and other important metadata
       type: object
