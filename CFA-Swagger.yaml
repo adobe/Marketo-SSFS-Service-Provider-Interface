@@ -314,6 +314,15 @@ components:
             $ref: '#/components/schemas/objectDataCallBack'
       xml:
         name: flowCallBack
+    fieldsCallback:
+      type: object
+      properties:
+        fieldName1:
+          type: string
+          example: 'fieldValue1'
+        fieldName2:
+          type: string
+          example: 'fieldValue2'
     serviceDefinition:
       type: object
       required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
@@ -357,7 +366,7 @@ components:
           example: https://serviceprovider.com/get/provider_instruction.html
         primaryAttribute:
           type: string
-          description: API name of the attribute that describes the primary asset, should match one from or callback attribute list
+          description: API name of the attribute that describes the primary asset, should match one from invocation or callback attribute list
         invocationPayloadDef:
           $ref: '#/components/schemas/invocationPayloadDefObject'
         callbackPayloadDef:
@@ -407,7 +416,7 @@ components:
           enum: ['apiKey']
         headerName:
           type: string
-          example: 'x-API-Key'
+          example: 'X-API-Key'
     oauth2AuthObject:
       type: object
       required: [authType]
@@ -448,7 +457,7 @@ components:
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/serviceFieldMapping'
+            $ref: '#/components/schemas/invocationFieldMapping'
         userDrivenMapping:
           type: boolean
         programContext: 
@@ -476,15 +485,12 @@ components:
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/serviceFieldMapping'
+            $ref: '#/components/schemas/fieldMapping'
     invocationAttributeObject:
       allOf:
         - $ref: '#/components/schemas/attributeObject'
         - type: object
           properties:
-            required:
-              type: boolean
-              description: Whether or not this attribute is required by the service
             enforcePicklistSelect:
               type: boolean
               description: Whether or not the attribute value has to be exact match of an entry from the picklist
@@ -520,7 +526,15 @@ components:
         uiTooltip:
           type: string
           example: 'What Marketo field should be used to find the lookup value?'
-    serviceFieldMapping:
+    invocationFieldMapping:
+      allOf:
+        - $ref: '#/components/schemas/fieldMapping'
+        - type: object
+          properties:
+            required:
+              type: boolean
+              description: Whether or not this attribute is required by the service
+    fieldMapping:
       type: object
       properties:
         serviceAttributeName:
@@ -538,16 +552,7 @@ components:
         dataType:
           type: string
           example: integer
-    fieldsCallback:
-      type: object
-      properties:
-        fieldName1:
-          type: string
-          example: 'fieldValue1'
-        fieldName2:
-          type: string
-          example: 'fieldValue2'
-          
+
         
           
   securitySchemes:
