@@ -374,7 +374,7 @@ components:
           enum: ['apiKey']
         headerName:
           type: string
-          example: 'x-API-Key'
+          example: 'X-API-Key'
     oauth2AuthObject:
       type: object
       required: [authType]
@@ -419,7 +419,7 @@ components:
           description: Field mappings needed for invocation.  Fields which are mapped in Marketo are sent in the leadContext object.  If userDrivenMapping is 'true', the contents of this array will be ignored
           type: array
           items:
-            $ref: '#/components/schemas/serviceFieldMapping'
+            $ref: '#/components/schemas/invocationFieldMapping'
         userDrivenMapping:
           description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
           type: boolean
@@ -449,7 +449,7 @@ components:
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/serviceFieldMapping'
+            $ref: '#/components/schemas/fieldMapping'
         userDrivenMapping:
           description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
           type: boolean
@@ -458,9 +458,6 @@ components:
         - $ref: '#/components/schemas/attributeObject'
         - type: object
           properties:
-            required:
-              type: boolean
-              description: Whether or not this attribute is required by the service
             enforcePicklistSelect:
               type: boolean
               description: Whether or not the attribute value has to be exact match of an entry from the picklist
@@ -496,7 +493,15 @@ components:
         uiTooltip:
           type: string
           example: 'What Marketo field should be used to find the lookup value?'
-    serviceFieldMapping:
+    invocationFieldMapping:
+      allOf:
+        - $ref: '#/components/schemas/fieldMapping'
+        - type: object
+          properties:
+            required:
+              type: boolean
+              description: Whether or not this field is required by the service, thus required during field mapping
+    fieldMapping:
       type: object
       properties:
         serviceAttributeName:
