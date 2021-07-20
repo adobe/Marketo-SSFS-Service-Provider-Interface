@@ -34,6 +34,13 @@ paths:
         selfServiceFlowComplete: 
           '{$request.body#/flowComplete}':
              post:
+               parameters:
+                 - in: header
+                   name: x-api-key
+                   schema:
+                     type: string
+                     format: uuid
+                   required: true
               requestBody:
                 description: Flow Action return data for post processing
                 content:
@@ -100,6 +107,10 @@ components:
           format: uuid
         batchid:
           description: ID of the marketo campaign run invoking the service
+          type: string
+          format: uuid
+        apiCallBackKey:
+          description: API key to be used in the callback header
           type: string
           format: uuid
         campaignId:
