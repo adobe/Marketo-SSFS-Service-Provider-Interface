@@ -503,12 +503,12 @@ components:
               description: Whether or not this field is required by the service, thus required during field mapping
     fieldMapping:
       type: object
-      required: [serviceAttributeName, description, dataType]
+      required: [serviceAttribute, description, dataType]
       properties:
-        serviceAttributeName:
+        serviceAttribute:
           description: Name of the attribute as sent during invocation or callback.
           type: string
-          example: 'serviceAttributeName'
+          example: 'providerFieldName'
         suggestedMarketoAttribute:
           description: If this matches the apiName and data type of a Marketo lead field, that field will be populated as the default choice for the mapping during service installation
           type: string
