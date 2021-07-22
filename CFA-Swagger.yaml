@@ -503,6 +503,7 @@ components:
               description: Whether or not this field is required by the service, thus required during field mapping
     fieldMapping:
       type: object
+      required: [serviceAttributeName, description, dataType]
       properties:
         serviceAttributeName:
           description: Name of the attribute as sent during invocation or callback.
