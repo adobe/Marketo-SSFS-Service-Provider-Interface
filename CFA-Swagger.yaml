@@ -33,14 +33,14 @@ paths:
       callbacks: # Callback definition
         selfServiceFlowComplete: 
           '{$request.body#/flowComplete}':
-             post:
-               parameters:
-                 - in: header
-                   name: x-api-key
-                   schema:
-                     type: string
-                     format: uuid
-                   required: true
+            post:
+              parameters:
+               - in: header
+                 name: x-api-key
+                 schema:
+                   type: string
+                   format: uuid
+                 required: true
               requestBody:
                 description: Flow Action return data for post processing
                 content:
@@ -243,7 +243,6 @@ components:
           type: object
           additionalProperties: true
         leadData:
-          description: Object used to submit data back to lead record.  Included fields must be included in service definition unless userDrivenMapping is false.  Fields must also be mapped and active in Incoming Fields menu for write to succeed.
           $ref: '#/components/schemas/leadData'
     leadData:
       type: object
@@ -254,6 +253,7 @@ components:
           type: integer
           format: int64
       additionalProperties: true
+      description: Object used to submit data back to lead record.  Included fields must be included in service definition unless userDrivenMapping is false.  Fields must also be mapped and active in Incoming Fields menu for write to succeed.
     flowCallBack:
       required:
       - munchkinId
@@ -517,7 +517,7 @@ components:
       required: [serviceAttribute, description, dataType]
       properties:
         serviceAttribute:
-          description: Name of the attribute as sent during invocation or callback.
+          description: Name of the attribute as sent during invocation or callback. 'id' is reserved by system and cannot be used here.
           type: string
           example: 'providerFieldName'
         suggestedMarketoAttribute:
