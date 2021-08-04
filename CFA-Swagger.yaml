@@ -340,6 +340,16 @@ components:
           $ref: '#/components/schemas/invocationPayloadDefObject'
         callbackPayloadDef:
           $ref: '#/components/schemas/callbackPayloadDefObject'
+        supportPage:
+          type: string
+          format: uri
+          example: https://serviceprovider.com/contact_us.html
+          description: Either supportPage or supportEmail has to be defined
+        supportEmail:
+          type: string
+          format: email
+          example: support@serviceprovider.com
+          description: Either supportPage or supportEmail has to be defined
     serviceI18nObject:
       type: object
       properties:
