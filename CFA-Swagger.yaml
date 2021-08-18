@@ -91,7 +91,7 @@ paths:
               schema: 
                 $ref: '#/components/schemas/serviceDefinition'
   /status:
-    description: Defines metadata used to exchange data between Marketo and service provider.  Polled nightly by Marketo
+    description: Returns status information, notifications and deprecation info from the service.  Polled nightly by Marketo
     get: #update to get
       summary: Returns status information for the service
       responses:
