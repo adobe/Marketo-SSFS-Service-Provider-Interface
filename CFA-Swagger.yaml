@@ -556,7 +556,7 @@ components:
           type: string
           example: integer
     serviceStatus:
-      description:  Object containing status information
+      description:  Object containing status information.  Polled nightly.
       type: object
       properties:
         info:
