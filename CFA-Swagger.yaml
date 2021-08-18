@@ -90,6 +90,17 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/serviceDefinition'
+  /status:
+    description: Defines metadata used to exchange data between Marketo and service provider.  Polled nightly by Marketo
+    get: #update to get
+      summary: Returns status information for the service
+      responses:
+        200:
+          description: Status info of Service
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/serviceStatus'
 components:
   schemas:
     async:
@@ -544,6 +555,36 @@ components:
         dataType:
           type: string
           example: integer
+    serviceStatus:
+      description:  Object containing status information
+      type: object
+      properties:
+        info:
+          description: Array of info notifications to send to Marketo.  Logged as INFO in the service log
+          type: array
+          items: 
+            type: string
+        warnings:
+          description: Array of warning notifications to send to Marketo.  Logged as WARN in the service log
+          type: array
+          items: 
+            type: string
+        errors:
+          description: Array of error notifications to send to Marketo.  Logged as ERROR in the service log
+          type: array
+          items: 
+            type: string
+        deprecationMessage:
+          description: Message indicating that the service is being deprecated.  Sending this field without deprecationDate will change status to deprecated immediately
+          type: string
+        deprecationDate:
+          description: Date of service deprecation
+          type: string
+          format: datetime
+        clearDeprecation:
+          description: Set this field to true to clear the deprecation status of your service in Marketo
+          type: boolean
+
           
         
           
