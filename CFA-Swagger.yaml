@@ -575,16 +575,12 @@ components:
           items: 
             type: string
         deprecationMessage:
-          description: Message indicating that the service is being deprecated.  Sending this field without deprecationDate will change status to deprecated immediately
+          description: Message indicating that the service is being deprecated.
           type: string
         deprecationDate:
-          description: Date of service deprecation
+          description: If set, Marketo will consider the service deprecated if in the past.  Set to null to clear deprecation status completely  
           type: string
           format: datetime
-        clearDeprecation:
-          description: Set this field to true to clear the deprecation status of your service in Marketo
-          type: boolean
-
           
         
           
