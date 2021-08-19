@@ -101,6 +101,17 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/serviceStatus'
+  /providerInstructions:
+    description: Returns html document to embed how-to instructions for any required configuration which is not covered by automated installation
+    get:
+      summary: Returns how-to html
+      response:
+        200:
+          description: "OK"
+          content:
+            text/html:
+              schema:
+                type: string
 components:
   schemas:
     async:
