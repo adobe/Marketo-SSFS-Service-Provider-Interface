@@ -106,17 +106,23 @@ paths:
     get:
       responses:
         200:
+          description: "OK"
           content:
-            image/x-icon:
-              type: string
+            image/*:
+             schema: 
+               type: string
+               format: binary
   /serviceIcon:
     description: Returns an icon to represent brand in Smart Campaign Flow Pallette, and in Service Providers menu
     get:
       responses:
         200:
+          description: "OK"
           content:
-            image/x-icon:
-              type: string
+            image/*:
+             schema: 
+               type: string
+               format: binary
 components:
   schemas:
     async:
