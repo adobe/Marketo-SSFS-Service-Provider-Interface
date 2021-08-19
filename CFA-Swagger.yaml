@@ -101,6 +101,22 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/serviceStatus'
+  /brandIcon:
+    description: Returns an icon to represent brand in Service Providers menu
+    get:
+      responses:
+        200:
+          content:
+            image/x-icon:
+              type: string
+  /serviceIcon:
+    description: Returns an icon to represent brand in Smart Campaign Flow Pallette, and in Service Providers menu
+    get:
+      responses:
+        200:
+          content:
+            image/x-icon:
+              type: string
 components:
   schemas:
     async:
