@@ -123,6 +123,20 @@ paths:
              schema: 
                type: string
                format: binary
+  /picklists:
+    description: Returns lists of choices for flow and  global parameters.
+    get:
+      summary: Returns lists of choices for flow and  global parameters.
+      responses: 
+        200:
+          description: Returns lists of choices for flow and  global parameters.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/picklistObject'
+
 components:
   schemas:
     async:
@@ -603,6 +617,50 @@ components:
           description: If set, and the date is in the past, Marketo will consider the service deprecated. Remove to clear deprecation status
           type: string
           format: datetime
+    picklistObject:
+      description: Object containing choices for flow and global parameters
+      type: object
+      required: [paramName, paramType, choices]
+      properties:
+        paramName:
+          description: Name of param to provide choices for.  Must be the name of a flow or global param as describe in the Service Definition
+          type: string
+        paramType:
+          description: Whether the param is a flow or global param
+          type: string
+          enum: [flow, global]
+        choices:
+          description: List of choices to be offered in the picklist for the parameter in Marketo
+          type: array
+          items:
+            $ref: '#/components/schemas/picklistChoice'  
+    picklistChoice:
+      description: Object containing display value and submitted value.
+      required: [displayValue, submittedValue]
+      properties:
+        displayValue:
+          type: object
+          $ref: '#/components/schemas/displayValue'
+        submittedValue:
+          description: Value which will be submitted when the choice is selected
+          anyOf:
+            - type: boolean
+            - type: integer
+            - type: number
+            - type: string
+    displayValue:
+      description: Object containing display value and translations.  Additional property names should be two letter language codes, e.g. 'fr', or language/locale pairs, e.g. 'fr_ca'.
+      type: object
+      required: [en_us]
+      properties:
+        en_us:
+          description: English display value.  This is the primary Marketo fallback choice if no translation is found in the end user's language
+          type: string
+      additionalProperties:
+        type: string
+
+
+    
           
         
           
