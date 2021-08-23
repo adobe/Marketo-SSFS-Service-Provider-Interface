@@ -135,19 +135,25 @@ paths:
                type: string
                format: binary
   /picklists:
-    description: Returns lists of choices for flow and  global parameters.
+    description: Returns lists of choices for a flow or global parameter.
     get:
-      summary: Returns lists of choices for flow and  global parameters.
+      summary: Returns lists of choices for a flow or global parameter.
+      parameters:
+        name:
+          type: string
+          description: Name of the field to retrieve choices for
+          example: eventName
+        type:
+          type: string
+          description: Type of parameter to return choices for.  Either flow or global
+          enum: [flow, global]
       responses: 
         200:
-          description: Returns lists of choices for flow and  global parameters.
+          description: Returns lists of choices for a flow or global parameter.
           content:
             application/json:
               schema:
-                type: array
-                items:
                   $ref: '#/components/schemas/picklistObject'
-
 components:
   schemas:
     async:
@@ -631,15 +637,9 @@ components:
     picklistObject:
       description: Object containing choices for flow and global parameters
       type: object
-      required: [paramName, paramType, choices]
+      required: [choices]
       properties:
         paramName:
-          description: Name of param to provide choices for.  Must be the name of a flow or global param as describe in the Service Definition
-          type: string
-        paramType:
-          description: Whether the param is a flow or global param
-          type: string
-          enum: [flow, global]
         choices:
           description: List of choices to be offered in the picklist for the parameter in Marketo
           type: array
@@ -654,6 +654,7 @@ components:
           $ref: '#/components/schemas/displayValue'
         submittedValue:
           description: Value which will be submitted when the choice is selected
+          example: country-codes.csv
           anyOf:
             - type: boolean
             - type: integer
@@ -667,5 +668,6 @@ components:
         en_us:
           description: English display value.  This is the primary Marketo fallback choice if no translation is found in the end user's language
           type: string
+          example: Country Codes Table
       additionalProperties:
         type: string
