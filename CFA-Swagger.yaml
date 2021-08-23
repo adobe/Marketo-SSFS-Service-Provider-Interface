@@ -105,7 +105,7 @@ paths:
     description: Returns html document to embed how-to instructions for any required configuration which is not covered by automated installation
     get:
       summary: Returns how-to html
-      response:
+      responses:
         200:
           description: "OK"
           content:
@@ -139,14 +139,17 @@ paths:
     get:
       summary: Returns lists of choices for a flow or global parameter.
       parameters:
-        name:
-          type: string
+        - name: name 
+          in: query
+          schema:
+            type: string
           description: Name of the field to retrieve choices for
-          example: eventName
-        type:
-          type: string
+        - name: type
+          in: query
           description: Type of parameter to return choices for.  Either flow or global
-          enum: [flow, global]
+          schema:
+            type: string
+            enum: [flow, global]
       responses: 
         200:
           description: Returns lists of choices for a flow or global parameter.
@@ -305,6 +308,18 @@ components:
         activityData:
           description: Object used to submit activity data for a single lead.  Attributes defined as 'response' attributes may be included to write to the activity resulting from invocation
           type: object
+          properties:
+            success:
+              type: boolean
+              description: Whether the operation succeeded for this record
+            reason:
+              type: string
+              description: What occurred to cause the operation to fail
+              example: "No value found for search parameters, Key: country Value: Sealand"
+            errorCode:
+              type: string
+              description: Provide an easy-to-reference error code in the case of failure
+              example: "LOOKUP_VALUE_NOT_FOUND"
           additionalProperties: true
         leadData:
           $ref: '#/components/schemas/leadData'
@@ -639,7 +654,6 @@ components:
       type: object
       required: [choices]
       properties:
-        paramName:
         choices:
           description: List of choices to be offered in the picklist for the parameter in Marketo
           type: array
