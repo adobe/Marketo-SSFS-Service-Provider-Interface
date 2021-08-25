@@ -7,7 +7,7 @@ info:
   license:
     name: Marketo API License
     url: https://developers.marketo.com/api-license/
-  version: 0.1.0
+  version: 0.2.0
 externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
@@ -134,7 +134,7 @@ paths:
              schema: 
                type: string
                format: binary
-  /picklists:
+  /getPicklist:
     description: Returns lists of choices for a flow or global parameter.
     get:
       summary: Returns lists of choices for a flow or global parameter.
@@ -371,7 +371,7 @@ components:
       required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
       properties:
         apiName:
-          description: Default identifier for service and activity.  Users installing multiple service with the same apiName will be prompted to resolve collision by inputting a custom name during installation
+          description: Default identifier for service and activity.  Users installing multiple service with the same apiName will be prompted to resolve collision by inputting a custom name during installation.  Values 'success', 'reason', and 'errorCode' are always included in activityData and may not be declared here, see '#components/schemas/callbackData'.
           type: string
           example: 'lookupTable'
         provider:
@@ -408,7 +408,7 @@ components:
           type: string
           format: uri
           example: https://serviceprovider.com/get/brand.ico
-        providerInstruction:
+        providerInstructions:
           type: string
           format: uri
           example: https://serviceprovider.com/get/provider_instruction.html
