@@ -315,7 +315,7 @@ components:
             reason:
               type: string
               description: What occurred to cause the operation to fail
-              example: "No value found for search parameters, Key: country Value: Sealand"
+              example: "No value found for search parameters, Key: country Value: Cascadia"
             errorCode:
               type: string
               description: Provide an easy-to-reference error code in the case of failure
@@ -361,6 +361,14 @@ components:
               description: Default values for activity attributes
               type: object
               additionalProperties: true
+        errorCode:
+          type: string
+          description: If set, no objectData will be processed, and an error will be logged with the given errorCode and errorMessage
+          example: LOOKUP_VALUE_NOT_FOUND
+        errorMessage:
+          type: string
+          description: Message to be logged if errorCode was set.
+          example: "No value found for search parameters, Key: country Value: Cascadia"
         objectData:
           type: array
           items:
