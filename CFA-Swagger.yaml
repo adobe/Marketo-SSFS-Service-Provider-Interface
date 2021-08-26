@@ -685,3 +685,30 @@ components:
           example: Country Codes Table
       additionalProperties:
         type: string
+    fieldMappingContext:
+      description: Object containing lists of lead fields which are mapped and sent in the payload of invocation or callback.  May be used to generate picklist choices on the fly based on configuration in Marketo
+      type: object
+      properties:
+        invocationFieldMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/reqFieldMapping'
+        callbackFieldMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/reqFieldMapping'
+    reqFieldMapping:
+      description: Describes lead field mappings as they are configured in the invoking marketo instance
+      type: object
+      required: [marketoFieldName]
+      properties:
+        marketoAttribute:
+          description: Marketo API name of the mapped field.  If service is configured to use User-Driven Mappings, only the Marketo Field Name will be sent
+          type: string
+          example: email
+        serviceAttribute:
+          description: API Name of the mapped field as defined by the service.  Only sent if service does not use User-Driven Mappings
+          type: string
+          example: emailAddress
+
+
