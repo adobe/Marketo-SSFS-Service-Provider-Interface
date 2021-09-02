@@ -677,9 +677,9 @@ components:
     displayValue:
       description: Object containing display value and translations.  Additional property names should be two letter language codes, e.g. 'fr', or language/locale pairs, e.g. 'fr_ca'.
       type: object
-      required: [en_us]
+      required: [en_US]
       properties:
-        en_us:
+        en_US:
           description: English display value.  This is the primary Marketo fallback choice if no translation is found in the end user's language
           type: string
           example: Country Codes Table
