@@ -700,7 +700,7 @@ components:
     reqFieldMapping:
       description: Describes lead field mappings as they are configured in the invoking marketo instance
       type: object
-      required: [marketoFieldName]
+      required: [marketoAttribute]
       properties:
         marketoAttribute:
           description: Marketo API name of the mapped field.  If service is configured to use User-Driven Mappings, only the Marketo Field Name will be sent
