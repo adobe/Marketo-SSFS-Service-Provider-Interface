@@ -41,6 +41,11 @@ paths:
                    type: string
                    format: uuid
                  required: true
+               - in: header
+                 name: x-callback-token
+                 schema:
+                   type: string
+                 required: true
               requestBody:
                 description: Flow Action return data for post processing
                 content:
