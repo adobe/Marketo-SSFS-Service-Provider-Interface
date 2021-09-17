@@ -42,7 +42,7 @@ paths:
                    format: uuid
                  required: true
                - in: header
-                 name: token
+                 name: x-callback-token
                  schema:
                    type: string
                  required: true
