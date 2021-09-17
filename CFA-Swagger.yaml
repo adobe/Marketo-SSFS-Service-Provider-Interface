@@ -683,11 +683,11 @@ components:
       description: Object containing lists of lead fields which are mapped and sent in the payload of invocation or callback.  May be used to generate picklist choices on the fly based on configuration in Marketo
       type: object
       properties:
-        invocationFieldMappings:
+        invocation:
           type: array
           items:
             $ref: '#/components/schemas/reqFieldMapping'
-        callbackFieldMappings:
+        callback:
           type: array
           items:
             $ref: '#/components/schemas/reqFieldMapping'
