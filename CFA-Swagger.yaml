@@ -329,16 +329,12 @@ components:
     flowCallBack:
       required:
       - munchkinId
-      - token
       - time
       type: object
       properties:
         munchkinId:
           type: string
           example: '123-ABD-456'
-        token:
-          type: string
-          example: '3912aec7-6d5c-4348-8b32-08966ac0dbc7'
         time:
           type: string
           format: date-time
