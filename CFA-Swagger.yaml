@@ -45,7 +45,6 @@ paths:
                  name: token
                  schema:
                    type: string
-                   format: uuid
                  required: true
               requestBody:
                 description: Flow Action return data for post processing
