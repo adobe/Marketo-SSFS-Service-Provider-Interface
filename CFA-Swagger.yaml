@@ -7,7 +7,7 @@ info:
   license:
     name: Marketo API License
     url: https://developers.marketo.com/api-license/
-  version: 0.2.0
+  version: 0.2.2
 externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
@@ -40,6 +40,11 @@ paths:
                  schema:
                    type: string
                    format: uuid
+                 required: true
+               - in: header
+                 name: x-callback-token
+                 schema:
+                   type: string
                  required: true
               requestBody:
                 description: Flow Action return data for post processing
@@ -155,25 +160,19 @@ components:
   schemas:
     async:
       required:
-      - id
-      - batchid
       - campaignId
-      - type
       - callbackUrl
       type: object
       properties:
         token: 
           description: One-time use access token for submitting callback data to Marketo
           type: string
-          format: uuid
         batchid:
           description: ID of the marketo campaign run invoking the service
           type: string
-          format: uuid
         apiCallBackKey:
           description: API key to be used in the callback header
           type: string
-          format: uuid
         campaignId:
           description: ID of the campaign invoking the service
           type: integer
@@ -330,16 +329,12 @@ components:
     flowCallBack:
       required:
       - munchkinId
-      - token
       - time
       type: object
       properties:
         munchkinId:
           type: string
           example: '123-ABD-456'
-        token:
-          type: string
-          example: '3912aec7-6d5c-4348-8b32-08966ac0dbc7'
         time:
           type: string
           format: date-time
@@ -677,9 +672,9 @@ components:
     displayValue:
       description: Object containing display value and translations.  Additional property names should be two letter language codes, e.g. 'fr', or language/locale pairs, e.g. 'fr_ca'.
       type: object
-      required: [en_us]
+      required: [en_US]
       properties:
-        en_us:
+        en_US:
           description: English display value.  This is the primary Marketo fallback choice if no translation is found in the end user's language
           type: string
           example: Country Codes Table
@@ -689,18 +684,18 @@ components:
       description: Object containing lists of lead fields which are mapped and sent in the payload of invocation or callback.  May be used to generate picklist choices on the fly based on configuration in Marketo
       type: object
       properties:
-        invocationFieldMappings:
+        invocation:
           type: array
           items:
             $ref: '#/components/schemas/reqFieldMapping'
-        callbackFieldMappings:
+        callback:
           type: array
           items:
             $ref: '#/components/schemas/reqFieldMapping'
     reqFieldMapping:
       description: Describes lead field mappings as they are configured in the invoking marketo instance
       type: object
-      required: [marketoFieldName]
+      required: [marketoAttribute]
       properties:
         marketoAttribute:
           description: Marketo API name of the mapped field.  If service is configured to use User-Driven Mappings, only the Marketo Field Name will be sent
