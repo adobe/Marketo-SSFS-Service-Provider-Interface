@@ -14,12 +14,14 @@ This endpoint is the entry point for Marketo to begin onboarding of your service
 
 Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
 
+Authentication type is set in the Service Defintion under authSetting.  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header. 
+
 
 #### Field Mappings
 
 In order for lead data to be sent to or received from a service, those fields must be mapped to an existing Marketo field.  Field mappings have two types, outgoing and incoming (relative to invocation by Marketo).  Outgoing fields are sent by Marketo to the service during invocation, while incoming fields are received by Marketo through the callback and have their values written back to the lead record.  There are also two usage modes for field mappings: Service-Driven Mappings for services that have a fixed and predetermined set of person-fields to complete data processing, like an event registration service, and User-Driven Mappings for services that have generic arguments, like a service for looking up data from tables uploaded by users.
 
-Fields that have been mapped, where user or service-driven, are sent to the service when refreshing picklist choices in the fieldMappingContext object, so that mapped fields may be used to generate choices.  See [Picklists](#picklists)
+Fields that have been mapped, where user or service-driven, are sent to the service when refreshing picklist choices in the fieldMappingContext object, so that mapped fields may be used to generate choices.  See [Picklists](#getpicklist)
 
 ##### Service-Driven Mapppings
 
@@ -66,13 +68,15 @@ In this example, when onboarding, JobTitle will default to mapping to the field 
 
 If your service has a flexible set of inputs and outputs, then user-driven mappings are likely the best choice for your service.  Using a lookup table flow step as an example, if we have a country code lookup table where we need to send a 'country' field and receive a 'countryCode' field, then an admin will need to manually add those fields during onboarding.
 
-#### Activity Attributes
-
-
-
 #### Flow and Global Parameters
 
+Aside from field mappings, Flow and Global parameters are the primary means of parameterization when invoking a service.  
 
+**Flow** parameters are assigned at the individual flow step level, meaning that these parameters may have completely different values from one campaign to another.  In our event-registration example, we would need to define an "Event" Flow paramater as a string to select the event to register for.  In most cases, it's easier for services to deal with IDs and users to deal with Names, so for cases like this, you should consider configuring the parameter as a picklist so that you can offer the Event Name to the user, but receive the submitted ID value.  See [/getPicklist](#getpicklist) for more information
+
+**Global** parameters are assigned at the service level by an admin user.  Global params are submitted with every invocation request.  In our Lookup Table use case example, "Directory" would be an example of a global parameter, where in order to provide a reduced picklist of tables to the end user, the admin would give the value of the directory where the relevant lookup tables for their instance live on the service-side
+
+#### Activity Attributes
 
 
 
@@ -84,7 +88,7 @@ This endpoint is invoked by Marketo when the flow action is invoked by a Marketo
 
 #### selfServiceFlowComplete Callback
 
-When processing fro the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.
+When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.
 
 ##### Default Values
 
@@ -121,7 +125,7 @@ As of writing, September 2021, Self-Service Flow actions are planned for inclusi
 
 ### What kind of data can I send and receive with this feature?
 
-You can send any lead field, flow step or global parameters, and execution context
+You can send any lead field, flow step or global parameters, and execution context.  Token values, e.g. {{my.Token}}, may also be used in flow or global parameters.
 
 ## Useful Links
 
