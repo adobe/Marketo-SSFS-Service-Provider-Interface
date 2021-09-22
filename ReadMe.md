@@ -70,7 +70,7 @@ If your service has a flexible set of inputs and outputs, then user-driven mappi
 
 #### Flow and Global Parameters
 
-Aside from field mappings, Flow and Global parameters are the primary means of parameterization when invoking a service.  
+Aside from field mappings, Flow and Global parameters are the primary means of parameterization when invoking a service.  If parameters have suggested values, then the 'picklistUrl' attribute should be populated with your /getPicklist URL.  If this parameter can only accept a fixed set of values then it should have both a picklistUrl and have enforcePicklistSelect set to true.
 
 **Flow** parameters are assigned at the individual flow step level, meaning that these parameters may have completely different values from one campaign to another.  In our event-registration example, we would need to define an "Event" Flow paramater as a string to select the event to register for.  In most cases, it's easier for services to deal with IDs and users to deal with Names, so for cases like this, you should consider configuring the parameter as a picklist so that you can offer the Event Name to the user, but receive the submitted ID value.  See [/getPicklist](#getpicklist) for more information
 
@@ -78,7 +78,7 @@ Aside from field mappings, Flow and Global parameters are the primary means of p
 
 #### Activity Attributes
 
-
+Activity attributes define the data that you can send back and write to an activity in the 'attributes' of your callbackPayloadDef in your service definition.  Activities in Marketo serve two primary purposes: driving triggered events, and recording an event related to a person.  You may not use the names _success_, _reason_, or _errorCode_ as these are reserved created for all SSFS activity types and can be written to in the [selfServiceFlowComplete Callback](#selfserviceflowcompletecallback).
 
 #### Context Data
 
@@ -88,11 +88,19 @@ This endpoint is invoked by Marketo when the flow action is invoked by a Marketo
 
 #### selfServiceFlowComplete Callback
 
-When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.
+When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.  When sendin
 
 ##### Default Values
 
 Lead and activity data have have default values set through the callback.  This can reduce the amount of data which needs to be sent over the wire, and can simplify mapping data back to Marketo if appropriate for your service.
+
+##### Errors
+
+Chunk-level errors not reported by the http response to invocation should be represented by errorCode and errorMessage in the callback payload.  errorCode is used to classify the error in Marketo service logs, and each instance will increment the error reporting count for the day.  errorMessage will be recorded to the logged event.  Error codes for individual activities and chunk-level failures should not have overlapping names to avoid complications in statistical reporting.
+
+##### callbackData
+
+callbackData is where record-specific values for the person and activity are written in leadData and activityData respectively.  Each callbackData must have a leadData with an _id_ property or it will be recorded as unsuccessful.  Other properties must be defined in the serviceDefinition and mapped by an admin of the invoking instance in order to be written.  In order to correctly report on failures to execute a job successfully for an individual record, in activityData, you should set success to false and populate errorCode with a string classifying the reason for failure, e.g. LOOKUP_VALUE_NOT_FOUND, and reason with a detailed message specific to the failure, e.g. "No value found for search parameters, Key: country Value: Cascadia."  Error codes for individual activities and chunk-level failures should not have overlapping names to avoid complications in statistical reporting.  If a record
 
 ### /status
 
@@ -100,7 +108,9 @@ Status and health endpoint that the service may use to provide Informational, Wa
 
 ### /getPicklist - _Optional_
 
-Endpoint to return picklist choices for flow of global parameters defined as picklists in the service definition.  A maximum of 1000 choices per field are supported at this time.  Supports separate display and picklist values
+Endpoint to return picklist choices for flow of global parameters defined as picklists in the service definition.  A maximum of 1000 choices per field are supported at this time.  Supports separate display and picklist values.  A submittedValue and displayValue with an en_US default is required.  When invoked, marketo will send a name and a type, either flow or global, which your service can use to determine which choices to respond with.
+
+If implemented, Marketo will poll this endpoint in a nightly job for each parameter in your service definition with a populated picklistUrl parameter.
 
 ### /brandIcon - _Optional_
 
@@ -110,22 +120,31 @@ Endpoint that returns an image which identifies your brand for use in the Market
 
 Endpoint that returns an image which identifies your service for use in the Marketo UI.  This icon is used to represent your service's flow action in the Campaign Flow Pallette in the UI
 
+## Errors and Logging
 
-## Configuration
+### Error Codes
 
+**Error codes for individual activities and chunk-level failures should not have overlapping names to avoid complications in statistical reporting.**
 
-
-### Picklists
+Error codes are used to classify outcomes of failed chunks, and failed records.  Each error code has a daily count which is incremented for each instance of an error received through invocation HTTP Response, e.g. 429 Too Many Requests, in the callback at the chunk level, e.g. TABLE_FILE_NOT_FOUND, or at the record level, e.g LOOKUP_VALUE_NOT_FOUND.
 
 ## FAQs
 
 ### What types of Marketo Subscriptions have access to this feature?
 
-As of writing, September 2021, Self-Service Flow actions are planned for inclusion in all Marketo Engage packages
+As of writing, September 2021, Self-Service Flow actions are planned for inclusion in all Marketo Engage packages when it becomes available for general release
 
 ### What kind of data can I send and receive with this feature?
 
 You can send any lead field, flow step or global parameters, and execution context.  Token values, e.g. {{my.Token}}, may also be used in flow or global parameters.
+
+### How does internationalization work?
+
+Many fields allow internationalization based on country and locale code, e.g. "en_US"  However, Marketo only offers UI support for a [fixed set of languages](https://experienceleague.adobe.com/docs/marketo/using/product-docs/administration/settings/select-your-language-locale-and-time-zone.html?lang=en), and does not offer locale translation support as of September 2021.  This means that you may offer additional translations that are locale-specific or have unsupported language codes, but until support is added, there will be no way to access those translations.
+
+### What data types are supported?
+
+These are defined in '#components/schemas/fieldType': boolean, integer, date, datetime, email, float, phone, score, string, url, text.  [Read more about Marketo Field Types](https://experienceleague.adobe.com/docs/marketo/using/product-docs/administration/field-management/custom-field-type-glossary.html?lang=en)
 
 ## Useful Links
 
@@ -133,3 +152,4 @@ You can send any lead field, flow step or global parameters, and execution conte
 * [Marketo Engage Documentation](https://docs.marketo.com)
 * [IO Runtime Documentation](https://www.adobe.io/apis/experienceplatform/runtime/docs.html)
 * [Project Firefly Documentation](https://www.adobe.io/project-firefly/docs/overview/)
+* [Lookup Table POC](TODO)
