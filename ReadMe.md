@@ -1,5 +1,5 @@
 # Self-Service Flow Actions Service Provider Interface
-Self-service Flow Actions is a framework for creating and publishing HTTP APIs for consumption by Marketo Smart Campaigns as flow actions. The accompanying OpenAPI/Swagger document is a Service-Provider Interface describing how an API must be implemented for automatic integration to Marketo instances.  Implementation of an API requires at least 3 and as many as 7 endpoints, definition of an authentication schema, and the compoenents and schemas required for implementation
+Self-service Flow Actions is a framework for creating and publishing HTTP APIs for consumption by Marketo Smart Campaigns as flow actions. The accompanying OpenAPI/Swagger document is a Service-Provider Interface describing how an API must be implemented for automatic integration to Marketo instances.  Implementation of an API requires at least 3 and as many as 7 endpoints, definition of an authentication schema, and the components and schemas required for implementation
 
 
 [//]: # (Add Overview Diagram Here)
@@ -14,7 +14,7 @@ This endpoint is the entry point for Marketo to begin onboarding of your service
 
 Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
 
-Authentication type is set in the Service Defintion under authSetting.  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header. 
+Authentication type is set in the Service Definition under authSetting.  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header. 
 
 
 #### Field Mappings
@@ -23,7 +23,7 @@ In order for lead data to be sent to or received from a service, those fields mu
 
 Fields that have been mapped, where user or service-driven, are sent to the service when refreshing picklist choices in the fieldMappingContext object, so that mapped fields may be used to generate choices.  See [Picklists](#getpicklist)
 
-##### Service-Driven Mapppings
+##### Service-Driven Mappings
 
 If your service requires a fixed set of inputs to process a record, then using Service-Driven Mappings is likely the correct choice for you.  Take an example use case, registering for an event.  A typical registration will require Full Name, Contact Info (Phone and/or Email), and Job Title.  In this case your invocationPayloadDef.fields might look like this:
 
@@ -72,7 +72,7 @@ If your service has a flexible set of inputs and outputs, then user-driven mappi
 
 Aside from field mappings, Flow and Global parameters are the primary means of parameterization when invoking a service.  If parameters have suggested values, then the 'picklistUrl' attribute should be populated with your /getPicklist URL.  If this parameter can only accept a fixed set of values then it should have both a picklistUrl and have enforcePicklistSelect set to true.
 
-**Flow** parameters are assigned at the individual flow step level, meaning that these parameters may have completely different values from one campaign to another.  In our event-registration example, we would need to define an "Event" Flow paramater as a string to select the event to register for.  In most cases, it's easier for services to deal with IDs and users to deal with Names, so for cases like this, you should consider configuring the parameter as a picklist so that you can offer the Event Name to the user, but receive the submitted ID value.  See [/getPicklist](#getpicklist) for more information
+**Flow** parameters are assigned at the individual flow step level, meaning that these parameters may have completely different values from one campaign to another.  In our event-registration example, we would need to define an "Event" Flow parameter as a string to select the event to register for.  In most cases, it's easier for services to deal with IDs and users to deal with Names, so for cases like this, you should consider configuring the parameter as a picklist so that you can offer the Event Name to the user, but receive the submitted ID value.  See [/getPicklist](#getpicklist) for more information
 
 **Flow Parameters and Activity Attributes must not have any overlapping field names**
 
@@ -93,7 +93,7 @@ This endpoint is invoked by Marketo when the flow action is invoked by a Marketo
 
 #### selfServiceFlowComplete Callback
 
-When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.  When sendin
+When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.  When sending
 
 ##### Default Values
 
@@ -113,7 +113,7 @@ Status and health endpoint that the service may use to provide Informational, Wa
 
 ### /getPicklist - _Optional_
 
-Endpoint to return picklist choices for flow of global parameters defined as picklists in the service definition.  A maximum of 1000 choices per field are supported at this time.  Supports separate display and picklist values.  A submittedValue and displayValue with an en_US default is required.  When invoked, marketo will send a name and a type, either flow or global, which your service can use to determine which choices to respond with.
+Endpoint to return picklist choices for flow of global parameters defined as picklists in the service definition.  A maximum of 1000 choices per field are supported at this time.  Supports separate display and picklist values.  A submittedValue and displayValue with an en_US default is required.  When invoked, Marketo will send a name and a type, either flow or global, which your service can use to determine which choices to respond with.
 
 If implemented, Marketo will poll this endpoint in a nightly job for each parameter in your service definition with a populated picklistUrl parameter.
 
@@ -123,7 +123,7 @@ Endpoint that returns an image which identifies your brand for use in the Market
 
 ### /serviceIcon - _Optional_
 
-Endpoint that returns an image which identifies your service for use in the Marketo UI.  This icon is used to represent your service's flow action in the Campaign Flow Pallette in the UI
+Endpoint that returns an image which identifies your service for use in the Marketo UI.  This icon is used to represent your service's flow action in the Campaign Flow Palette in the UI
 
 ## Errors and Logging
 
