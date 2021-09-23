@@ -74,11 +74,16 @@ Aside from field mappings, Flow and Global parameters are the primary means of p
 
 **Flow** parameters are assigned at the individual flow step level, meaning that these parameters may have completely different values from one campaign to another.  In our event-registration example, we would need to define an "Event" Flow paramater as a string to select the event to register for.  In most cases, it's easier for services to deal with IDs and users to deal with Names, so for cases like this, you should consider configuring the parameter as a picklist so that you can offer the Event Name to the user, but receive the submitted ID value.  See [/getPicklist](#getpicklist) for more information
 
+**Flow Parameters and Activity Attributes must not have any overlapping field names**
+
 **Global** parameters are assigned at the service level by an admin user.  Global params are submitted with every invocation request.  In our Lookup Table use case example, "Directory" would be an example of a global parameter, where in order to provide a reduced picklist of tables to the end user, the admin would give the value of the directory where the relevant lookup tables for their instance live on the service-side
 
 #### Activity Attributes
 
-Activity attributes define the data that you can send back and write to an activity in the 'attributes' of your callbackPayloadDef in your service definition.  Activities in Marketo serve two primary purposes: driving triggered events, and recording an event related to a person.  You may not use the names _success_, _reason_, or _errorCode_ as these are reserved created for all SSFS activity types and can be written to in the [selfServiceFlowComplete Callback](#selfserviceflowcompletecallback).
+Activity attributes define the data that you can send back and write to an activity in the 'attributes' of your callbackPayloadDef in your service definition.  Activities in Marketo serve two primary purposes: driving triggered events, and recording an event related to a person.  You may not use the names _success_, _reason_, or _errorCode_ as these are reserved created for all SSFS activity types and can be written to in the [selfServiceFlowComplete Callback](#selfserviceflowcompletecallback).  When written, activities will log both the values submitted in the callback, and the parameter values of the executed flow step choice.
+
+**Flow Parameters and Activity Attributes must not have any overlapping field names**
+
 
 #### Context Data
 
