@@ -411,7 +411,7 @@ components:
           example: https://serviceprovider.com/get/provider_instruction.html
         primaryAttribute:
           type: string
-          description: API name of the attribute that describes the primary asset. This must match the name of an attribute from the flow or callback attribute list
+          description: API name of the attribute that describes the primary asset. This must match an attribute from the flow attribute list and *cannot* match an attribute from the callback attribute list.
         invocationPayloadDef:
           $ref: '#/components/schemas/invocationPayloadDefObject'
         callbackPayloadDef:
@@ -725,6 +725,3 @@ components:
       description: Enum of acceptable datatypes for mappings, parameters, and activity attributes
       type: string
       enum: [boolean, integer, date, datetime, email, float, phone, score, string, url, text]
-
-
-
