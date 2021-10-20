@@ -1,13 +1,12 @@
 openapi: 3.0.1
 info:
   title: SSFA
-  description: This is a sample SSFA server swagger doc for providers to build their
-    own services to be used with Marketo SSFA.
+  description: This document describes the schema used by Marketo Self-Service Flow actions.  By implementing an API conforming to this interface, you can create custom flow actions for use in Marketo Smart Campaigns
   termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
   license:
-    name: Marketo API License
-    url: https://developers.marketo.com/api-license/
-  version: 0.2.2
+    name: MIT
+    url: /license.md
+  version: 0.2.3
 externalDocs:
   description: Find out more about Swagger
   url: https://swagger.io
@@ -37,12 +36,13 @@ paths:
               parameters:
                - in: header
                  name: x-api-key
+                 description: IO Gateway Key.
                  schema:
                    type: string
-                   format: uuid
                  required: true
                - in: header
                  name: x-callback-token
+                 description: Token sent by Marketo during submitAsyncAction invocation.
                  schema:
                    type: string
                  required: true
@@ -329,15 +329,11 @@ components:
     flowCallBack:
       required:
       - munchkinId
-      - time
       type: object
       properties:
         munchkinId:
           type: string
           example: '123-ABD-456'
-        time:
-          type: string
-          format: date-time
         defaultValues:
           description: If a value for a given record is not set in the objectData array, then it will default to the value set in the corresponding defaults object here if there is one
           type: object
@@ -359,6 +355,7 @@ components:
           description: Message to be logged if errorCode was set.
           example: "No value found for search parameters, Key: country Value: Cascadia"
         objectData:
+          description: List of lead and activity data to write back to Marketo
           type: array
           items:
             $ref: '#/components/schemas/callbackData'
@@ -724,4 +721,4 @@ components:
     fieldType:
       description: Enum of acceptable datatypes for mappings, parameters, and activity attributes
       type: string
-      enum: [boolean, integer, date, datetime, email, float, phone, score, string, url, text]
+      enum: [boolean, integer, date, datetime, email, float, score, string, url, text]
