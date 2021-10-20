@@ -5,7 +5,7 @@ info:
   termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
   license:
     name: MIT
-    url: /license.md
+    url: /license
   version: 0.2.3
 externalDocs:
   description: Find out more about Swagger
