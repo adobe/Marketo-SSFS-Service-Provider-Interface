@@ -1,6 +1,8 @@
 # Self-Service Flow Actions Service Provider Interface
 Self-service Flow Actions is a framework for creating and publishing HTTP APIs for consumption by Marketo Smart Campaigns as flow actions. The accompanying OpenAPI/Swagger document is a Service-Provider Interface describing how an API must be implemented for automatic integration to Marketo instances.  Implementation of an API requires at least 3 and as many as 7 endpoints, definition of an authentication schema, and the components and schemas required for implementation
 
+**Note: This is currently a pre-release feature and is only available to Marketo Subscriptions enrolled in the Closed Beta at this time**
+
 
 [//]: # (Add Overview Diagram Here)
 
@@ -158,7 +160,7 @@ These are defined in '#components/schemas/fieldType': boolean, integer, date, da
 
 ### What will happen if data I return to Marketo exceeds the maximum length of the target field?
 
-String and string-like alues that exceed maximum length of the target field will be truncated to that length
+String and string-like values that exceed maximum length of the target field will be truncated to that length
 
 ### What happens if I update the API credentials of an integration?
 

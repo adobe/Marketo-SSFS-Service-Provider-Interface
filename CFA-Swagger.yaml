@@ -5,17 +5,11 @@ info:
   termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
   license:
     name: MIT
-    url: /license.md
+    url: /license
   version: 0.2.3
-externalDocs:
-  description: Find out more about Swagger
-  url: https://swagger.io
 tags:
 - name: flow action
   description: your service action
-  externalDocs:
-    description: Find out more
-    url: todo://marketo.docs/link
 paths:
   /submitAsyncAction:
     description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
@@ -471,7 +465,7 @@ components:
           example: 'X-API-Key'
     oauth2AuthObject:
       type: object
-      required: [authType]
+      required: [authType, tokenEndpoint]
       description: See RFC 6749
       properties:
         authType:
@@ -494,7 +488,7 @@ components:
         tokenEndpoint:
           type: string
           format: uri
-          description: Applicable if refreshTokenEnabled is true
+          description: Endpoint to retrieve access token from
     invocationPayloadDefObject:
       description: Describes lead field mappings, flow & global attributes, and contexts required by the service during invocation
       type: object
