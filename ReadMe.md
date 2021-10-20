@@ -1,6 +1,8 @@
 # Self-Service Flow Actions Service Provider Interface
 Self-service Flow Actions is a framework for creating and publishing HTTP APIs for consumption by Marketo Smart Campaigns as flow actions. The accompanying OpenAPI/Swagger document is a Service-Provider Interface describing how an API must be implemented for automatic integration to Marketo instances.  Implementation of an API requires at least 3 and as many as 7 endpoints, definition of an authentication schema, and the components and schemas required for implementation
 
+**Note: This is currently a pre-release feature and is only available to Marketo Subscriptions enrolled in the Closed Beta at this time**
+
 
 [//]: # (Add Overview Diagram Here)
 
@@ -84,6 +86,7 @@ Activity attributes define the data that you can send back and write to an activ
 
 **Flow Parameters and Activity Attributes must not have any overlapping field names**
 
+The **primaryAttribute** field must be a flow parameter.
 
 #### Context Data
 
@@ -93,7 +96,11 @@ This endpoint is invoked by Marketo when the flow action is invoked by a Marketo
 
 #### selfServiceFlowComplete Callback
 
-When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.  When sending
+When processing of the invocation request has been completed, lead and activity data are returned via callback.  Data must be passed back to lead fields and activity attributes in the same manner as described by the service definition.  
+
+When Data Value Change activities are recorded as the result of a callback, the "Source" and "Reason" attributes will be populated with the following data:
+* Source: "{Service Name} ({Id})"
+* Reason: "Smart Campaign: {Id}, Step Seq ID: {Id}"
 
 ##### Default Values
 
@@ -150,6 +157,14 @@ Many fields allow internationalization based on country and locale code, e.g. "e
 ### What data types are supported?
 
 These are defined in '#components/schemas/fieldType': boolean, integer, date, datetime, email, float, phone, score, string, url, text.  [Read more about Marketo Field Types](https://experienceleague.adobe.com/docs/marketo/using/product-docs/administration/field-management/custom-field-type-glossary.html?lang=en)
+
+### What will happen if data I return to Marketo exceeds the maximum length of the target field?
+
+String and string-like values that exceed maximum length of the target field will be truncated to that length
+
+### What happens if I update the API credentials of an integration?
+
+Updating API credentials is not recommended if you intend to continue to use the service, but if the following conditions are met, then continued operation is possible:  If the new account shares the same URLs, API definition, and Service Definition, then the service should continue to operate as normal.  If the new account does not have the same configuration, then Marketo may not be able to invoke the service correctly.
 
 ## Useful Links
 
