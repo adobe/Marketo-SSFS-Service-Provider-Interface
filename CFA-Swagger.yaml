@@ -1,7 +1,8 @@
 openapi: 3.0.1
 info:
   title: SSFA
-  description: This document describes the schema used by Marketo Self-Service Flow actions.  By implementing an API conforming to this interface, you can create custom flow actions for use in Marketo Smart Campaigns.  Title will be used to define the service name when ingested in Marketo.  Use 'version' to indicate the version of our service, use 'x-schemaVersion' to indicate which version of the Service Provider Interface that your service implements.  'servers' may be set if the service host is different from the URL used to access your API definition, if unset the same host will be assumed, values after the first will be ignored.
+  x-provderName: This should be the name of the Service Provider, e.g. Adobe Marketo Engage
+  description: This document describes the schema used by Marketo Self-Service Flow actions.  By implementing an API conforming to this interface, you can create custom flow actions for use in Marketo Smart Campaigns.  Title will be used to define the service name when ingested in Marketo, while x-providerName should be the name of the organization providing the service.  Use 'version' to indicate the version of your service, use 'x-schemaVersion' to indicate which version of the Service Provider Interface that your service implements.  'servers' may be set if the service host is different from the URL used to access your API definition, if unset the same host will be assumed, values after the first will be ignored.
   termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
   license:
     name: MIT
