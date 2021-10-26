@@ -592,7 +592,10 @@ components:
           items:
             $ref: '#/components/schemas/invocationFieldMapping'
         headers:
-          description: List of headers to be included in invocations of /async.  Headers defined her
+          description: List of headers to be included in invocations of /async.  Headers defined here can be populated in the UI by end users
+          type: array
+          items: 
+            $ref: '#/components/schemas/headerAttributeObject'
         userDrivenMapping:
           description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
           type: boolean
