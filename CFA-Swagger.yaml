@@ -228,6 +228,10 @@ components:
       description: Global configuration data as defined by Marketo administrator
       type: object
       additionalProperties: true
+    headers:
+      description: List of headers to be sent in invocation.  Inputs must be added by users in the UI
+      additionalProperties:
+        $ref: '#/components/schemas/invocationAttributeObject'
     campaign: # campaign identifiers / runtime information
       description: Data related to the invoking Smart Campaign
       type: object
