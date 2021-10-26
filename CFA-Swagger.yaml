@@ -591,6 +591,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/invocationFieldMapping'
+        headers:
+          description: List of headers to be included in invocations of /async.  Headers defined her
         userDrivenMapping:
           description: Indicates whether the service will provide a pre-defined list of mappings.  If 'true', 'fields' will be ignored, and mappings must be added manually by users.
           type: boolean
@@ -633,16 +635,17 @@ components:
     invocationAttributeObject:
       allOf:
         - $ref: '#/components/schemas/attributeObject'
-        - type: object
-          properties:
-            enforcePicklistSelect:
-              type: boolean
-              description: Whether or not the attribute value has to be exact match of an entry from the picklist
-            picklistUrl:
-              type: string
-              format: uri
-              description: Endpoint to provide a value list for this attribute to choose from. Applicable if enforcePicklistSelect is true
-              example: 'https://serviceprovider.com/get/picklist'
+        - $ref: '#/components/schemas/picklistAttribute'
+    picklistAttribute:
+      type: object
+      properties:
+        enforcePicklistSelect:
+          type: boolean
+          description: Whether or not the attribute value has to be exact match of an entry from the picklist.  Ignored if hasPicklist is false
+        hasPicklist:
+          type: boolean
+          format: uri
+          description: Whether picklist choices are provided for this attribute.
     attributeObject:
       type: object
       required: [apiName, i18n, dataType]
@@ -652,11 +655,32 @@ components:
           example: 'keyValue'
         i18n:
           type: object
+          required: [en_US]
           properties:
             en_US:
               $ref: '#/components/schemas/attributeI18nObject'
+          additionalProperties:
+            $ref: '#/components/schemas/attributeI18nObject'
         dataType:
           $ref: '#/components/schemas/fieldType'
+    headerAttributeObject:
+      allOf:
+        - $ref: '#/components/schemas/picklistAttribute'
+        - type: object
+          required: [name]
+          properties:
+            name:
+              type: string
+              description: Name of the header to send
+              example: x-enable-extended-logging
+            description:
+              type: object
+              required: [en_US]
+              properties:
+                en_US:
+                  $ref: '#/components/schemas/attributeI18nObject'
+              additionalProperties:
+                $ref: '#/components/schemas/attributeI18nObject'
     attributeI18nObject:
       type: object
       properties:
