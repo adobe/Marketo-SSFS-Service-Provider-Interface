@@ -231,7 +231,7 @@ components:
     headers:
       description: List of headers to be sent in invocation.  Inputs must be added by users in the UI
       additionalProperties:
-        $ref: '#/components/schemas/invocationAttributeObject'
+        $ref: '#/components/schemas/headerAttributeObject'
     campaign: # campaign identifiers / runtime information
       description: Data related to the invoking Smart Campaign
       type: object
@@ -647,7 +647,6 @@ components:
           description: Whether or not the attribute value has to be exact match of an entry from the picklist.  Ignored if hasPicklist is false
         hasPicklist:
           type: boolean
-          format: uri
           description: Whether picklist choices are provided for this attribute.
     attributeObject:
       type: object
@@ -677,13 +676,14 @@ components:
               description: Name of the header to send
               example: x-enable-extended-logging
             description:
+              description: Used to describe purpose of the header.  Keys should be valid 2-letter language and locale codes, e.g. fr_CA, for Canadian french
               type: object
               required: [en_US]
               properties:
                 en_US:
-                  $ref: '#/components/schemas/attributeI18nObject'
-              additionalProperties:
-                $ref: '#/components/schemas/attributeI18nObject'
+                  type: string
+              additionalProperties: 
+                type: string
     attributeI18nObject:
       type: object
       properties:
