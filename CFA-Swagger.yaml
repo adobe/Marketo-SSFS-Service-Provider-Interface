@@ -677,13 +677,7 @@ components:
               example: x-enable-extended-logging
             description:
               description: Used to describe purpose of the header.  Keys should be valid 2-letter language and locale codes, e.g. fr_CA, for Canadian french
-              type: object
-              required: [en_US]
-              properties:
-                en_US:
-                  type: string
-              additionalProperties: 
-                type: string
+              $ref: '#/components/schemas/i18nString'
     attributeI18nObject:
       type: object
       properties:
@@ -718,7 +712,7 @@ components:
           example: 'marketoAttributeName'
         description:
           description: Description presented to the user for the mapping during installation.
-          type: object
+          $ref: '#/components/schemas/i18nString'
           properties:
             en_US:
               type: string
@@ -767,7 +761,7 @@ components:
       properties:
         displayValue:
           type: object
-          $ref: '#/components/schemas/displayValue'
+          $ref: '#/components/schemas/i18nString'
         submittedValue:
           description: Value which will be submitted when the choice is selected
           example: country-codes.csv
@@ -776,17 +770,16 @@ components:
             - type: integer
             - type: number
             - type: string
-    displayValue:
-      description: Object containing display value and translations.  Additional property names should be two letter language codes, e.g. 'fr', or language/locale pairs, e.g. 'fr_ca'.
-      type: object
-      required: [en_US]
-      properties:
-        en_US:
-          description: English display value.  This is the primary Marketo fallback choice if no translation is found in the end user's language
-          type: string
-          example: Country Codes Table
-      additionalProperties:
-        type: string
+    # displayValue:
+    #   description: Object containing display value and translations.
+      # required: [en_US]
+      # properties:
+      #   en_US:
+      #     description: English display value.  This is the primary Marketo fallback choice if no translation is found in the end user's language
+      #     type: string
+      #     example: Country Codes Table
+      # additionalProperties:
+      #   type: string
     fieldMappingContext:
       description: Object containing lists of lead fields which are mapped and sent in the payload of invocation or callback.  May be used to generate picklist choices on the fly based on configuration in Marketo
       type: object
@@ -832,6 +825,15 @@ components:
       description: Enum of acceptable datatypes for mappings, parameters, and activity attributes
       type: string
       enum: [boolean, integer, date, datetime, email, float, score, string, url, text]
+    i18nString:
+      description: Used to provide translations for string fields which are surfaced to end users.  Keys should be valid 2-letter language and locale codes, e.g. fr_CA, for Canadian french
+      type: object
+      required: [en_US]
+      properties:
+        en_US:
+          type: string
+      additionalProperties:
+        type: string
   securitySchemes:
     # Used to describe how Marketo will authenticate with your service.  Indicate which scheme to use in the root "security" node.  While you may preserve multiple security schemes in your API definition, Marketo will only use the first scheme defined in the '#/security'
     apiKey:
