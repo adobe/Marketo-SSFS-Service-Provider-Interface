@@ -816,7 +816,7 @@ components:
         type:
           type: string
           description: Type of parameter to return choices for.  Either flow or global
-          enum: [flow, global]
+          enum: [flow, global, header]
         fieldMappingContext:
           description: Field mappings as configured in the invoking Marketo instance
           type: object
