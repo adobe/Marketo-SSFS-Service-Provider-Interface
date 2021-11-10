@@ -432,7 +432,7 @@ components:
     serviceDefinition:
       description: Used to describe configuration and metadata including fields expected during invocation & callback, user inputs on Marketo-side, and other important metadata
       type: object
-      required: [apiName, provider, i18n, invocationEndpoint, statusEndpoint, authSetting, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
+      required: [apiName, i18n, primaryAttribute, invocationPayloadDef, callbackPayloadDef]
       properties:
         apiName:
           description: Default identifier for service and activity.  Users installing multiple service with the same apiName will be prompted to resolve collision by inputting a custom name during installation.  Values 'success', 'reason', and 'errorCode' are always included in activityData and may not be declared here, see '#components/schemas/callbackData'.
