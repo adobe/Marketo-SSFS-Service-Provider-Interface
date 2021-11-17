@@ -172,4 +172,4 @@ Updating API credentials is not recommended if you intend to continue to use the
 * [Marketo Engage Documentation](https://docs.marketo.com)
 * [IO Runtime Documentation](https://www.adobe.io/apis/experienceplatform/runtime/docs.html)
 * [Project Firefly Documentation](https://www.adobe.io/project-firefly/docs/overview/)
-* [Lookup Table POC](TODO)
+* [Lookup Table POC](https://github.com/adobe/mkto-flow-lookup)

@@ -6,7 +6,7 @@ info:
   termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
   license:
     name: MIT
-    url: /license
+    url: https://github.com/adobe/Marketo-SSFS-Service-Provider-Interface/blob/master/LICENSE
   version: 0.3.0
   x-schemaVersion: 0.3.0
   x-supportContact:
