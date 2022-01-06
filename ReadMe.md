@@ -6,6 +6,14 @@ Self-service Flow Actions is a framework for creating and publishing HTTP APIs f
 
 [//]: # (Add Overview Diagram Here)
 
+## Changes from 0.2.3
+
+* Installation is now initiated with Swagger API definition rather than serviceDefinition endpoint
+* Removed auth, support contact, settings from serviceDefinition and moved them to Swagger
+    * Authentication should be defined using security and securitySchemes
+    * use x-fields to define non-standard names or patterns
+* Use x-schemaVersion to indicate version of CFA-Swagger.yaml used to define your API
+
 ## Endpoints
 
 ### /getServiceDefinition
