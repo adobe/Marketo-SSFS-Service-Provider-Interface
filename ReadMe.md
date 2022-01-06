@@ -150,6 +150,10 @@ Error codes are used to classify outcomes of failed chunks, and failed records. 
 
 ## FAQs
 
+### How do I initiate installation of a Flow Step Service?
+
+From the Admin -> Service Providers Menu, select Add New Service and input the URL of the Swagger Definition of your service.
+
 ### What types of Marketo Subscriptions have access to this feature?
 
 As of writing, September 2021, Self-Service Flow actions are planned for inclusion in all Marketo Engage packages when it becomes available for general release
