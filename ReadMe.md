@@ -14,17 +14,17 @@ Self-service Flow Actions is a framework for creating and publishing HTTP APIs f
     * use x-fields to define non-standard names or patterns
 * Use x-schemaVersion to indicate version of CFA-Swagger.yaml used to define your API
 
+## Authentication
+
+Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
+
+Authentication type is set in your swagger definition using the securitySchemes object .  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header.
+
 ## Endpoints
 
 ### /getServiceDefinition
 
-This endpoint is the entry point for Marketo to begin onboarding of your service into an individual instance.  It describes most of the configuration required to implement a service, includes links to other endpoints, describes the chosen authentication scheme, and describes the lead, activity, and contextual data required by the service to operate.
-
-#### Authentication
-
-Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
-
-Authentication type is set in the Service Definition under authSetting.  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header. 
+It describes most of the configuration required to implement a service, includes links to other endpoints, describes the chosen authentication scheme, and describes the lead, activity, and contextual data required by the service to operate.
 
 
 #### Field Mappings
