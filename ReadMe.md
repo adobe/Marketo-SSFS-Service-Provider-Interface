@@ -6,17 +6,25 @@ Self-service Flow Actions is a framework for creating and publishing HTTP APIs f
 
 [//]: # (Add Overview Diagram Here)
 
+## Changes from 0.2.3
+
+* Installation is now initiated with Swagger API definition rather than serviceDefinition endpoint
+* Removed auth, support contact, settings from serviceDefinition and moved them to Swagger
+    * Authentication should be defined using security and securitySchemes
+    * use x-fields to define non-standard names or patterns
+* Use x-schemaVersion to indicate version of CFA-Swagger.yaml used to define your API
+
+## Authentication
+
+Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
+
+Authentication type is set in your swagger definition using the securitySchemes object .  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header.
+
 ## Endpoints
 
 ### /getServiceDefinition
 
-This endpoint is the entry point for Marketo to begin onboarding of your service into an individual instance.  It describes most of the configuration required to implement a service, includes links to other endpoints, describes the chosen authentication scheme, and describes the lead, activity, and contextual data required by the service to operate.
-
-#### Authentication
-
-Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
-
-Authentication type is set in the Service Definition under authSetting.  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header. 
+It describes most of the configuration required to implement a service, includes links to other endpoints, describes the chosen authentication scheme, and describes the lead, activity, and contextual data required by the service to operate.
 
 
 #### Field Mappings
@@ -141,6 +149,10 @@ Endpoint that returns an image which identifies your service for use in the Mark
 Error codes are used to classify outcomes of failed chunks, and failed records.  Each error code has a daily count which is incremented for each instance of an error received through invocation HTTP Response, e.g. 429 Too Many Requests, in the callback at the chunk level, e.g. TABLE_FILE_NOT_FOUND, or at the record level, e.g LOOKUP_VALUE_NOT_FOUND.
 
 ## FAQs
+
+### How do I initiate installation of a Flow Step Service?
+
+From the Admin -> Service Providers Menu, select Add New Service and input the URL of the Swagger Definition of your service.
 
 ### What types of Marketo Subscriptions have access to this feature?
 
