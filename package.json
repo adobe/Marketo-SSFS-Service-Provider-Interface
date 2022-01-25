@@ -1,0 +1,22 @@
+{
+  "name": "custom-flow-action-swagger",
+  "version": "0.3.1",
+  "description": "Self-service Flow Actions is a framework for creating and publishing HTTP APIs for consumption by Marketo Smart Campaigns as flow actions. The accompanying OpenAPI/Swagger document is a Service-Provider Interface describing how an API must be implemented for automatic integration to Marketo instances.  Implementation of an API requires at least 3 and as many as 7 endpoints, definition of an authentication schema, and the components and schemas required for implementation",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^25.2.2"
+  },
+  "scripts": {
+    "test": "jest --passWithNoTests ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.corp.adobe.com:Marketo-Campaign/Custom-Flow-Action-Swagger.git"
+  },
+  "author": "",
+  "license": "MIT"
+}
