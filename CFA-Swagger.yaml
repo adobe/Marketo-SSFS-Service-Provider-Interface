@@ -386,20 +386,6 @@ components:
           type: string
           format: uri
           example: https://serviceprovider.com/get/caBundle
-        serviceIcon:
-          description: Icon to represent the individual service.  Used to represent the service flow step in the Marketo Campaign UI
-          type: string
-          format: uri
-          example: https://serviceprovider.com/get/service.ico
-        brandIcon:
-          description: Icon to represent the service provider.  Used to represent the service provider in the Service Providers Admin Menu
-          type: string
-          format: uri
-          example: https://serviceprovider.com/get/brand.ico
-        providerInstructions:
-          type: string
-          format: uri
-          example: https://serviceprovider.com/get/provider_instruction.html
         primaryAttribute:
           type: string
           description: API name of the attribute that describes the primary asset. This must match an attribute from the flow attribute list and *cannot* match an attribute from the callback attribute list.
