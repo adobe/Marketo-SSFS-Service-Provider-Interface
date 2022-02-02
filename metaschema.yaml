@@ -1,164 +1,170 @@
-openapi: 3.0.1
-info:
-  title: SSFA
-  x-providerName: This should be the name of the Service Provider, e.g. Adobe Marketo Engage
-  description: This document describes the schema used by Marketo Self-Service Flow actions.  By implementing an API conforming to this interface, you can create custom flow actions for use in Marketo Smart Campaigns.  Title will be used to define the service name when ingested in Marketo, while x-providerName should be the name of the organization providing the service.  Use 'version' to indicate the version of your service, use 'x-schemaVersion' to indicate which version of the Service Provider Interface that your service implements.  'servers' may be set if the service host is different from the URL used to access your API definition, if unset the same host will be assumed, values after the first will be ignored.
-  termsOfService: https://documents.marketo.com/legal/eusa/us/2012-08-28/
-  license:
-    name: MIT
-    url: https://github.com/adobe/Marketo-SSFS-Service-Provider-Interface/blob/master/LICENSE
-  version: 0.3.0
-  x-schemaVersion: 0.3.0
-  x-supportContact: "support@example.com"
-tags:
-- name: flow action
-  description: your service action
-security:
-  - apiKey: []
-  - oauth2: []
-  - basic: []
-paths:
-  /submitAsyncAction:
-    description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
-    post:
-      tags:
-      - flow action
-      operationId: ''
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/async'
-      callbacks: # Callback definition
-        selfServiceFlowComplete: 
-          '{$request.body#/flowComplete}':
-            post:
-              parameters:
-               - in: header
-                 name: x-api-key
-                 description: IO Gateway Key.
-                 schema:
-                   type: string
-                 required: true
-               - in: header
-                 name: x-callback-token
-                 description: Token sent by Marketo during submitAsyncAction invocation.
-                 schema:
-                   type: string
-                 required: true
-              requestBody:
-                description: Flow Action return data for post processing
-                content:
-                  application/json:
-                    schema:
-                      $ref: '#/components/schemas/flowCallBack'
-              responses:
-                405:
-                  description: Invalid input
-                  content: {}
-                404:
-                  description: Not Found
-                  content: {}
-      responses:
-        201:
-          description: |- 
-            Accepted:
-            - Webhook created
-        400:
-          description: |-
-            Bad Request:
-            - Expected parameters were missing from the request or were invalid or Invalid document structure
-        401:
-          description: |-
-            Unauthorized:
-            - The API credentials which Marketo has are not authorized to undertake the action
-        403:
-          description: |-
-            Forbidden:
-            - Authentication Failed
-        429:
-          description: |-
-            Too Many Requests:
-            - The service has received too many requests and should retry w/ an appropriate strategy
-        500:
-          description: |-
-            Internal Server Error:
-            - Invoking the service failed for an unknown reason
-  /getServiceDefinition:
-    description: Defines metadata used to exchange data between Marketo and service provider
-    get: #update to get
-      summary: Returns a service definition for user install
-      responses:
-        200:
-          description: Service Install Metadata
-          content:
-            application/json:
-              schema: 
-                $ref: '#/components/schemas/serviceDefinition'
-  /status:
-    description: Returns status information, notifications and deprecation info from the service.  Polled nightly by Marketo
-    get: #update to get
-      summary: Returns status information for the service
-      responses:
-        200:
-          description: Status info of Service
-          content:
-            application/json:
-              schema: 
-                $ref: '#/components/schemas/serviceStatus'
-  /providerInstructions:
-    description: Returns html document to embed how-to instructions for any required configuration which is not covered by automated installation
-    get:
-      summary: Returns how-to html
-      responses:
-        200:
-          description: "OK"
-          content:
-            text/html:
-              schema:
-                type: string
-  /brandIcon:
-    description: Returns an icon to represent brand in Service Providers menu
-    get:
-      responses:
-        200:
-          description: "OK"
-          content:
-            image/*:
-             schema: 
-               type: string
-               format: binary
-  /serviceIcon:
-    description: Returns an icon to represent brand in Smart Campaign Flow Pallette, and in Service Providers menu
-    get:
-      responses:
-        200:
-          description: "OK"
-          content:
-            image/*:
-             schema: 
-               type: string
-               format: binary
-  /getPicklist:
-    description: Returns lists of choices for a flow or global parameter.
-    post:
-      summary: Returns lists of choices for a flow or global parameter.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/getPicklistRequest'
-      responses: 
-        200:
-          description: Returns lists of choices for a flow or global parameter.
-          content:
-            application/json:
-              schema:
-                  $ref: '#/components/schemas/picklistObject'
+# $schema: "https://json-schema.org/draft/2020-12/schema"
+# $id: "https://www.example.com/schema.json"
+title: asdf
+description: asdf
+type: object
+required:
+  - info
+  - security
+  - paths
+  - components
+properties:
+  info:
+    type: object
+    required:
+      - x-providerName
+      - x-schemaVersion
+      - x-supportContact
+    properties:
+      x-providerName:
+        type: string
+      x-schemaVersion:
+        type: string
+      x-supportContact:
+        anyOf:
+          - x-supportEmail:
+            type: string
+          - x-supportPage:
+            type: string
+  security:
+    anyOf:
+      - apiKey: []
+      - oauth2: []
+      - basic: []
+  paths:
+    type: object
+    required:
+      - /submitAsyncAction
+      - /getServiceDefinition
+      - /status
+    properties:
+      /submitAsyncAction:
+        $ref: "#/components/schemas/submitAsyncAction"
+      /getServiceDefinition:
+        # TODO
+      /status:
+        # TODO
+      /brandIcon:
+        # TODO
+      /serviceIcon:
+        # TODO
+      /getPicklist:
+        # TODO
 components:
   schemas:
+    submitAsyncAction:
+      required: 
+        - post
+      properties:
+        description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
+        post:
+          required: 
+            - callbacks
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+            operationId:
+              type: string
+            requestBody:
+              required: true
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/async'
+            callbacks: # Callback definition
+              type: object
+              properties:
+                selfServiceFlowComplete: 
+                type: object
+                required:
+                  - '{$request.body#/flowComplete}'
+                properties:
+                  '{$request.body#/flowComplete}':
+                    type: object
+                    required:
+                      - post
+                    properties:
+                      post:
+                        type: object
+                        required:
+                          - requestBody
+                          - parameters
+                          - responses
+                        properties:
+                          parameters:
+                            type: array
+                            items: 
+                              type: string
+                                # - in: header
+                                #   name: x-api-key
+                                #   description: IO Gateway Key.
+                                #   schema:
+                                #     type: string
+                                #   required: true
+                                # - in: header
+                                #   name: x-callback-token
+                                #   description: Token sent by Marketo during submitAsyncAction invocation.
+                                #   schema:
+                                #     type: string
+                                #   required: true
+                          requestBody:
+                            description: Flow Action return data for post processing
+                            required:
+                              - content
+                            properties:
+                              content:
+                                type: object
+                                required:
+                                  - application/json
+                                properties:
+                                  application/json:
+                                    $ref: '#/components/schemas/flowCallBack'
+                          responses:
+                            type: object
+                            required:
+                              - 405
+                              - 404
+                            properties:
+                              405:
+                                type: object
+                              404:
+                                type: object
+          responses:
+            type: object
+            required:
+              - 201
+              - 400
+              - 401
+              - 403
+              - 429
+              - 500
+            properties:
+              201:
+                description: |- 
+                  Accepted:
+                  - Webhook created
+              400:
+                description: |-
+                  Bad Request:
+                  - Expected parameters were missing from the request or were invalid or Invalid document structure
+              401:
+                description: |-
+                  Unauthorized:
+                  - The API credentials which Marketo has are not authorized to undertake the action
+              403:
+                description: |-
+                  Forbidden:
+                  - Authentication Failed
+              429:
+                description: |-
+                  Too Many Requests:
+                  - The service has received too many requests and should retry w/ an appropriate strategy
+              500:
+                description: |-
+                  Internal Server Error:
+                  - Invoking the service failed for an unknown reason
     async:
       required:
       - campaignId
@@ -443,6 +449,15 @@ components:
           type: string
           format: uri
           example: https://serviceprovider.com/get/caBundle
+        serviceIcon:
+          description: Whether serviceIcon enpoint is implemented. Icon is used to represent the service flow step in the Marketo Campaign UI
+          type: boolean
+        brandIcon:
+          description: Whether brandIcon endpoint is implemented. Icon is used to represent the service provider in the Service Providers Admin Menu
+          type: boolean
+        providerInstructions:
+          description: Whether providerInstructions endpoint is implemented.  Instructions will be displayed during onboarding flow
+          type: boolean
         primaryAttribute:
           type: string
           description: API name of the attribute that describes the primary asset. This must match an attribute from the flow attribute list and *cannot* match an attribute from the callback attribute list.
@@ -727,30 +742,28 @@ components:
           type: string
       additionalProperties:
         type: string
-  securitySchemes:
-    # Used to describe how Marketo will authenticate with your service.  Indicate which scheme to use in the root "security" node.  While you may preserve multiple security schemes in your API definition, Marketo will only use the first scheme defined in the '#/security'
-    apiKey:
-      # Change the value of name to specify a different header name.  'in' may have a value of either 'header' or 'query'
-      type: apiKey
-      name: x-api-key
-      in: header
-    basic:
-      #See RFC 7235.  Set 'x-realm-required' to false if realm is not used
-      type: http
-      scheme: basic
-      x-realm-required: false
-    oauth2:
-      type: oauth2
-      flows: 
-        clientCredentials:
-          # Scopes should be empty.  Use x-fields to define nonstandard names to be used when requesting access token
-          tokenUrl: "https://www.example.com/token"
-          refreshUrl: "https://www.example.com/refreshToken"
-          scopes:
-            #yaml definitions fail swagger validation w/o a member
-            scope: Grants nothing
-          x-grantTypeName: not_client_credentials
-          x-clientIdName: not_client_id
-          x-clientSecretName: not_client_secret
-
-    
+  # securitySchemes:
+  #   # Used to describe how Marketo will authenticate with your service.  Indicate which scheme to use in the root "security" node.  While you may preserve multiple security schemes in your API definition, Marketo will only use the first scheme defined in the '#/security'
+  #   apiKey:
+  #     # Change the value of name to specify a different header name.  'in' may have a value of either 'header' or 'query'
+  #     type: apiKey
+  #     name: x-api-key
+  #     in: header
+  #   basic:
+  #     #See RFC 7235.  Set 'x-realm-required' to false if realm is not used
+  #     type: http
+  #     scheme: basic
+  #     x-realm-required: false
+  #   oauth2:
+  #     type: oauth2
+  #     flows: 
+  #       clientCredentials:
+  #         # Scopes should be empty.  Use x-fields to define nonstandard names to be used when requesting access token
+  #         tokenUrl: "https://www.example.com/token"
+  #         refreshUrl: "https://www.example.com/refreshToken"
+  #         scopes:
+  #           #yaml definitions fail swagger validation w/o a member
+  #           scope: Grants nothing
+  #         x-grantTypeName: not_client_credentials
+  #         x-clientIdName: not_client_id
+  #         x-clientSecretName: not_client_secret
