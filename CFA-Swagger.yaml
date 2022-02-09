@@ -742,6 +742,11 @@ components:
     oauth2:
       type: oauth2
       flows: 
+        authenticationCode:
+          authorizationUrl: "https:www.example.com/authorize"
+          tokenUrl: "https://www.example.com/token"
+          refreshUrl: "https://www.example.com/refreshToken"
+          scopes: []
         clientCredentials:
           # Scopes should be empty.  Use x-fields to define nonstandard names to be used when requesting access token
           tokenUrl: "https://www.example.com/token"

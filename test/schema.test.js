@@ -1,11 +1,11 @@
 const AJV = require('ajv');
-const ajv = new AJV({unknownFormats: ["int32", "int64"]});
+const ajv = new AJV({unknownFormats: ["int32", "int64", "datetime", "binary"]});
 
 const fs = require('fs');
 
 const yaml = require('js-yaml')
 
-const metaschema = yaml.load(fs.readFileSync('./metaschema.yaml'));
+const metaschema = yaml.load(fs.readFileSync('./schema.yaml'));
 const swagger = yaml.load(fs.readFileSync('./CFA-Swagger.yaml'));
 
 //ajv.addMetaSchema(metaschema, "meta")

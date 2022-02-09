@@ -41,17 +41,90 @@ properties:
       /submitAsyncAction:
         $ref: "#/components/schemas/submitAsyncAction"
       /getServiceDefinition:
+        $ref: "#/components/schemas/getServiceDefinition"
         # TODO
       /status:
+        $ref: "#/components/schemas/getStatus"
         # TODO
       /brandIcon:
-        # TODO
+        $ref: "#/components/schemas/getBrandIcon"
       /serviceIcon:
-        # TODO
+        $ref: "#/components/schemas/getServiceIcon"
       /getPicklist:
-        # TODO
+        $ref: "#/components/schemas/getPicklist"
+      /providerInstructions:
+        $ref: "#/components/schemas/getProviderInstructions"
 components:
+  required:
+    - schemas
+    - securitySchemes
+  properties:
+    schemas:
+      type: object
+    securitySchemes:
+      schema:
+        oneOf:
+          - "#/components/schemas/apiKeyScheme"
+          - "#/components/schemas/httpScheme"
+          - "#/components/schemas/oauth2Scheme"
   schemas:
+    oauth2Scheme:
+      required:
+        - type
+        - flows
+      properties:
+        type:
+          type: string
+          enum: [oauth2]
+        flows:
+          schema:
+            "#/components/schemas/oauthFlows"
+    httpScheme:
+      required:
+        - type
+        - scheme
+      properties:
+        type:
+          type: string
+          enum: [http]
+        scheme:
+          type: string
+          enum: [basic]
+    apiKeyScheme:
+      required:
+        - type
+        - name
+        - in
+      properties:
+        type:
+          type: string
+          enum: [apiKey]
+        name:
+          type: string
+        in:
+          type: string
+          enum: [query, header, cookie]
+    oauthFlows:
+      properties:
+        clientCredentials:
+          type:
+            $ref: "#/components/schemas/oauthFlow"
+        authorizationCode:
+          type:
+            $ref: "#/components/schemas/oauthFlow"
+    oauthFlow:
+      properties:
+        authorizationUrl:
+          type: string
+          format: uri
+        tokenUrl:
+          type: string
+          format: uri
+        refreshUrl:
+          type: string
+          format: uri
+        scopes:
+          type: array
     submitAsyncAction:
       required: 
         - post
@@ -165,6 +238,196 @@ components:
                 description: |-
                   Internal Server Error:
                   - Invoking the service failed for an unknown reason
+    getServiceDefinition:
+      required:
+        - get
+      properties:
+        get:
+          type: object
+          required:
+            - responses
+          properties:
+            responses:
+              type: object
+              required:
+                - 200
+              properties:
+                200:
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: object
+                      required:
+                      - application/json
+                      properties:
+                        application/json:
+                          type: object
+                          required:
+                            - schema
+                          properties:
+                            schema:
+                              type: object
+                              required:
+                               - $ref
+                              properties:
+                                $ref:
+                                  type: string
+                                  enum: ['#/components/schemas/serviceDefinition']
+    getStatus:
+      required:
+        - get
+      properties:
+        get:
+          type: object
+          required:
+            - responses
+          properties:
+            responses:
+              type: object
+              required:
+                - 200
+              properties:
+                200:
+                  type: object
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: object
+                      required:
+                      - application/json
+                      properties:
+                        application/json:
+                          type: object
+                          required:
+                            - schema
+                          properties:
+                            schema:
+                              type: object
+                              required:
+                               - $ref
+                              properties:
+                                $ref:
+                                  type: string
+                                  enum: ['#/components/schemas/serviceStatus']
+    getServiceIcon:
+      required:
+        - get
+      properties:
+        get:
+          type: object
+          required:
+            - responses
+          properties:
+            responses:
+              type: object
+              required:
+                - 200
+              properties:
+                200:
+                  type: object
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: object
+                      required:
+                      - image/*
+                      # properties:
+                      #   image/*:
+                      #     type: string
+                      #     format: binary
+    getBrandIcon: 
+      required:
+        - get
+      properties:
+        get:
+          type: object
+          required:
+            - responses
+          properties:
+            responses:
+              type: object
+              required:
+                - 200
+              properties:
+                200:
+                  type: object
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: object
+                      required:
+                      - image/*
+                      # properties:
+                      #   image/*:
+                      #     type: string
+                      #     format: binary
+    getPicklist:
+      required:
+        - post
+      properties:
+        post:
+          type: object
+          required:
+            - responses
+          properties:
+            responses:
+              type: object
+              required:
+                - 200
+              properties:
+                200:
+                  type: object
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: object
+                      required:
+                      - application/json
+                      properties:
+                        application/json:
+                          type: object
+                          required:
+                            - schema
+                          properties:
+                            schema:
+                              type: object
+                              required:
+                               - $ref
+                              properties:
+                                $ref:
+                                  type: string
+                                  enum: ['#/components/schemas/picklistObject']
+    getProviderInstructions:
+      required:
+        - get
+      properties:
+        get:
+          type: object
+          required:
+            - responses
+          properties:
+            responses:
+              type: object
+              required:
+                - 200
+              properties:
+                200:
+                  type: object
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: object
+                      required:
+                      - text/html
+                      # properties:
+                      #   text/html:
+                      #     type: string
     async:
       required:
       - campaignId
@@ -449,15 +712,6 @@ components:
           type: string
           format: uri
           example: https://serviceprovider.com/get/caBundle
-        serviceIcon:
-          description: Whether serviceIcon enpoint is implemented. Icon is used to represent the service flow step in the Marketo Campaign UI
-          type: boolean
-        brandIcon:
-          description: Whether brandIcon endpoint is implemented. Icon is used to represent the service provider in the Service Providers Admin Menu
-          type: boolean
-        providerInstructions:
-          description: Whether providerInstructions endpoint is implemented.  Instructions will be displayed during onboarding flow
-          type: boolean
         primaryAttribute:
           type: string
           description: API name of the attribute that describes the primary asset. This must match an attribute from the flow attribute list and *cannot* match an attribute from the callback attribute list.
