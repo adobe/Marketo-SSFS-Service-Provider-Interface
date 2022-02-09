@@ -26,11 +26,11 @@ const validate =  function(object, schema){
 }
 const validateFile = function (filePath, schemaPath) {
     // const schema = yaml.load(fs.readFileSync("../schema.yaml"))
-    const schemaFile = fs.readFileSync(schemaPath);
+    var schemaFile = fs.readFileSync(schemaPath);
     var schema;
-    if (schemaPath.indexOf(".yaml") > -1 || schemaPath.indexOf(".yml")) {
+    if (schemaPath.indexOf(".yaml") > -1 || schemaPath.indexOf(".yml") > -1) {
         schema = yaml.load(schemaFile)
-    } else if (filePath.indexOf(".json")) {
+    } else if (schemaPath.indexOf(".json")) {
         schema = JSON.parse(schemaFile);
     } else {
         throw new Error(`Schema with path ${schemaPath} is not a json or yaml file`)

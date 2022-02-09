@@ -3,12 +3,8 @@ const ajv = new AJV({ unknownFormats: ["int32", "int64", "datetime", "binary"] }
 
 const validate = require("../scripts/validate").validate
 const validateFile = require("../scripts/validate").validateFile
-
-
 const fs = require('fs');
-
 const yaml = require('js-yaml')
-
 
 const testSchema1 = {
     title: "testSchema",
@@ -21,11 +17,9 @@ const testSchema1 = {
         }
     }
 }
-
 const testObj1 = {
     test1: "string"
 }
-
 const testObj2 = {
     test1: true,
     test2: false
