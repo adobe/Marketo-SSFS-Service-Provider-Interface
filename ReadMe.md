@@ -224,6 +224,65 @@ Your API definition should reuse the schemas from the sample definition, CFA-swa
 
 Error codes are used to classify outcomes of failed chunks, and failed records.  Each error code has a daily count which is incremented for each instance of an error received through invocation HTTP Response, e.g. 429 Too Many Requests, in the callback at the chunk level, e.g. TABLE_FILE_NOT_FOUND, or at the record level, e.g LOOKUP_VALUE_NOT_FOUND.
 
+## Data Types
+
+Attributes and Fields you define must be of one of the following types:
+
+* boolean
+* integer
+* date
+* datetime
+* email
+* float
+* score
+* string
+* url
+* text
+
+### Boolean
+
+Returned values may have a value of _true_ or _false_.  Returning a primitive null will be treated as false
+
+### Integer
+
+Integers are signed 32-bit integers and may have values from -2147483648 to 2147483647
+
+### Date
+
+Accepts strings formatted with the full-date format described in [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6), e.g. 2022-01-01
+
+### Datetime
+
+Any ISO 8601 datetime may be returned, but subsecond values are trimmed and are not stored.  For example: 2022-01-01T00:00:00.001 will be stored as 2022-01-01T00:00:00 without milliseconds
+
+### Email
+
+Accepts email-formatted strings, e.g. "test@example.com"
+
+### Float
+
+Accepts floating-point numbers
+
+### Score
+
+Scores are a special type of integer field in Marketo.  Two different types of values may be returned by services, relative score changes, and absolute score changes.  Relative score changes include either a + or - character, followed by an integer, e.g. +5 or -5.  When a relative score change is returned, the lead's value for that field will be increased or decreased by the given amount.  For example, if a lead has a score of 27, and a value of -5 is returned by your service, the resulting score will be 22.
+
+If an absolute score change is returned, e.g. 5, then the lead's value for that field will be changed to the given value.  For example, if a lead has a score of 55 and your service returns a value of 0, then the resulting value will be 0.
+
+In general, absolute score changes should only be used when resetting a lead's score.  For most day-to-day use cases, relative score changes should be employed
+
+### String
+
+Accepts any string up to 255 bytes.
+
+### Url
+
+Accepts any URL-formatted string up to 255 bytes.
+
+### Text
+
+Accepts a string up to 2000 bytes.
+
 ## FAQs
 
 ### How do I initiate installation of a Flow Step Service?
