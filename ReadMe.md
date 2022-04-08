@@ -319,6 +319,11 @@ String and string-like values that exceed maximum length of the target field wil
 
 Updating API credentials is not recommended if you intend to continue to use the service, but if the following conditions are met, then continued operation is possible:  If the new account shares the same URLs, API definition, and Service Definition, then the service should continue to operate as normal.  If the new account does not have the same configuration, then Marketo may not be able to invoke the service correctly.
 
+## Known Issues
+
+* Returning `"null"` in a string-like field will clear the value of that field, but returning the JSON primitive `null` will not
+* Global configuration parameters which are designated as headers are currently sent in the payload of requests to your service, not as headers
+
 ## Useful Links
 
 * [Marketo Developer Documentation](https://developers.marketo.com)
