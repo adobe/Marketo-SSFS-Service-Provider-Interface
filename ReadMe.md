@@ -42,6 +42,8 @@ Your info section must include:
 * _x-schemaVersion_: A _string_ which must match a version of the schema used to create it.  This corresponds to this repository's version in package.json
 * _x-supportContact_: A _string_ which must be either an email address of URL which users can use to access support for your service
 
+If _servers_ is not set in your API definition, Marketo will infer your base path as whatever precedes the URL of your OpenAPI/Swagger file.  For example, if you have https://www.example.com/api/swagger.json, but have not set _servers_ in the file, https://www.example.com/api/ as the root of your API paths
+
 ### Security
 
 Your security section must use one of the sample schemes, _apiKey_, _oauth2_, or _basic_
