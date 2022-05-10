@@ -14,6 +14,7 @@ properties:
     required:
       - x-providerName
       - x-schemaVersion
+      - x-supportContact
     anyOf:
     - required:
       - x-supportPage
@@ -24,10 +25,12 @@ properties:
         type: string
       x-schemaVersion:
         type: string
-      x-supportPage:
-        type: string
-      x-supportEmail:
-        type: string
+      x-supportContact:
+        anyOf:
+          - supportEmail:
+            type: string
+          - supportPage:
+            type: string
   security:
     anyOf:
       - apiKey: []
