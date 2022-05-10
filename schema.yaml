@@ -15,11 +15,6 @@ properties:
       - x-providerName
       - x-schemaVersion
       - x-supportContact
-    anyOf:
-    - required:
-      - x-supportPage
-    - required:
-      - x-supportEmail
     properties:
       x-providerName:
         type: string
