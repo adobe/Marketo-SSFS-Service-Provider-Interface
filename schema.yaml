@@ -14,18 +14,20 @@ properties:
     required:
       - x-providerName
       - x-schemaVersion
-      - x-supportContact
+    anyOf:
+    - required:
+      - x-supportPage
+    - required:
+      - x-supportEmail
     properties:
       x-providerName:
         type: string
       x-schemaVersion:
         type: string
-      x-supportContact:
-        anyOf:
-          - x-supportEmail:
-            type: string
-          - x-supportPage:
-            type: string
+      x-supportPage:
+        type: string
+      x-supportEmail:
+        type: string
   security:
     anyOf:
       - apiKey: []
