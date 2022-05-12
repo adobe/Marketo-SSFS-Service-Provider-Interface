@@ -55,6 +55,8 @@ Your info section must include:
 * _x-schemaVersion_: A _string_ which must match a version of the schema used to create it.  This corresponds to this repository's version in package.json
 * _x-supportContact_: A _string_ which must be either an email address of URL which users can use to access support for your service
 
+If _servers_ is not set in your API definition, Marketo will infer your base path as whatever precedes the URL of your OpenAPI/Swagger file.  For example, if you have https://www.example.com/api/swagger.json, but have not set _servers_ in the file, https://www.example.com/api/ as the root of your API paths
+
 ### Security
 
 Your security section must use one of the sample schemes, _apiKey_, _oauth2_, or _basic_
@@ -332,9 +334,10 @@ String and string-like values that exceed maximum length of the target field wil
 
 Updating API credentials is not recommended if you intend to continue to use the service, but if the following conditions are met, then continued operation is possible:  If the new account shares the same URLs, API definition, and Service Definition, then the service should continue to operate as normal.  If the new account does not have the same configuration, then Marketo may not be able to invoke the service correctly.
 
-## Known issues
+## Known Issues
 
-* Returning a string primitive with a value of `"null"` will clear the contents of that field, while returning the primitive `null` will not
+* Returning `"null"` in a string-like field will clear the value of that field, but returning the JSON primitive `null` will not
+* Global configuration parameters which are designated as headers are currently sent in the payload of requests to your service, not as headers
 
 ## Useful Links
 
