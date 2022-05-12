@@ -7,8 +7,8 @@ info:
   license:
     name: MIT
     url: https://github.com/adobe/Marketo-SSFS-Service-Provider-Interface/blob/master/LICENSE
-  version: 0.3.0
-  x-schemaVersion: 0.3.0
+  version: 0.3.1
+  x-schemaVersion: 0.3.1
   x-supportContact: "support@example.com"
 tags:
 - name: flow action
@@ -741,21 +741,17 @@ components:
       x-realm-required: false
     oauth2:
       type: oauth2
-      flows: 
-        authenticationCode:
-          authorizationUrl: "https:www.example.com/authorize"
+      flows:
+        # Scopes must be empty. Use x-fields to define nonstandard names to be used when requesting access token
+        authorizationCode:
+          authorizationUrl: "https://www.example.com/authorize"
           tokenUrl: "https://www.example.com/token"
           refreshUrl: "https://www.example.com/refreshToken"
-          scopes: []
-        clientCredentials:
-          # Scopes should be empty.  Use x-fields to define nonstandard names to be used when requesting access token
-          tokenUrl: "https://www.example.com/token"
-          refreshUrl: "https://www.example.com/refreshToken"
-          scopes:
-            #yaml definitions fail swagger validation w/o a member
-            scope: Grants nothing
-          x-grantTypeName: not_client_credentials
+          scopes: {}
+          x-grantTypeName: not_authorization_code
           x-clientIdName: not_client_id
           x-clientSecretName: not_client_secret
-
-    
+        clientCredentials:
+          tokenUrl: "https://www.example.com/token"
+          refreshUrl: "https://www.example.com/refreshToken"
+          scopes: {}

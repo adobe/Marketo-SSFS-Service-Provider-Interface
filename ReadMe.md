@@ -8,6 +8,11 @@ Self-service Flow Actions is a framework for creating and publishing HTTP APIs f
 
 ## Changelog
 
+### Changes for 5/9/22 release (3.1)
+
+* support added for initiating installation via redirect.  A link formatted like `https://app.marketo.com/custAdmin/addServiceProvider?url=<url formatted location of your swagger definition>` will initiate installation to a Marketo instance for authenticated users
+* Support added for OAuth2 Authentication Code Grant, AKA Three-Legged OAuth, to support simplified and secure authentication for users
+
 ### Changes from 3.0
 
 * schema and tests added for validating OpenAPI definitions
@@ -24,11 +29,19 @@ Self-service Flow Actions is a framework for creating and publishing HTTP APIs f
 
 ## Authentication
 
-Currently, only Basic and API-Key based authentication are supported.  Support for OAuth2 Client Credentials, Refresh Token, and Authorization Code grant types, as well as JWT authentication are planned.
+Currently, Basic, API-Key, OAuth2 Client Credentials, Refresh Token and Authorization Code grant types are supported.  Authentication type is set in your swagger definition using the securitySchemes object.  
 
-Authentication type is set in your swagger definition using the securitySchemes object .  Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header.
+### Basic
 
+Setting the authType to 'basic' will prompt end users for a username and password during service configuration.  If your service does not use the 'realm' component of basic authentication as defined in [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-2.2), then you should also set realmRequired to 'false.'  During invocation Marketo will [encode the credentials as defined by the RFC](https://datatracker.ietf.org/doc/html/rfc7235#section-2.1) and send them in the Authorization header.
 
+### API Key
+
+API key authentication is support in either header or query params.
+
+### OAuth2
+
+Client Credentials, Authentication Code, and Refresh Token grant types are supported.  One of Client Credentials or Authentication code must be used, while Refresh Token is optionally supported in addition to one of these.  If multiple OAuth2 flows are described in your API definition, the `authorizationCode` flow will be preferred over `clientCredentials`.
 
 ## Authoring
 

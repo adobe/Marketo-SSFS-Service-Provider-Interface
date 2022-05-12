@@ -22,9 +22,9 @@ properties:
         type: string
       x-supportContact:
         anyOf:
-          - x-supportEmail:
+          - supportEmail:
             type: string
-          - x-supportPage:
+          - supportPage:
             type: string
   security:
     anyOf:
@@ -126,12 +126,13 @@ components:
         scopes:
           type: array
     submitAsyncAction:
+      description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
       required: 
         - post
       properties:
-        description: Lead and context data is submitted through this endpoint.  Results should be submitted through callback
         post:
           required: 
+            - requestBody
             - callbacks
           properties:
             tags:
@@ -141,15 +142,12 @@ components:
             operationId:
               type: string
             requestBody:
-              required: true
               content:
                 application/json:
                   schema:
                     $ref: '#/components/schemas/async'
             callbacks: # Callback definition
-              type: object
-              properties:
-                selfServiceFlowComplete: 
+              selfServiceFlowComplete: 
                 type: object
                 required:
                   - '{$request.body#/flowComplete}'
@@ -250,7 +248,7 @@ components:
             responses:
               type: object
               required:
-                - 200
+                - "200"
               properties:
                 200:
                   required:
@@ -286,7 +284,7 @@ components:
             responses:
               type: object
               required:
-                - 200
+                - "200"
               properties:
                 200:
                   type: object
@@ -323,7 +321,7 @@ components:
             responses:
               type: object
               required:
-                - 200
+                - "200"
               properties:
                 200:
                   type: object
@@ -350,7 +348,7 @@ components:
             responses:
               type: object
               required:
-                - 200
+                - "200"
               properties:
                 200:
                   type: object
@@ -377,7 +375,7 @@ components:
             responses:
               type: object
               required:
-                - 200
+                - "200"
               properties:
                 200:
                   type: object
@@ -414,7 +412,7 @@ components:
             responses:
               type: object
               required:
-                - 200
+                - "200"
               properties:
                 200:
                   type: object
