@@ -7,8 +7,8 @@ info:
   license:
     name: MIT
     url: https://github.com/adobe/Marketo-SSFS-Service-Provider-Interface/blob/master/LICENSE
-  version: 0.3.1
-  x-schemaVersion: 0.3.1
+  version: 1.0.0
+  x-schemaVersion: 1.0.0
   x-supportContact: "support@example.com"
 tags:
 - name: flow action
