@@ -1,12 +1,14 @@
 # Self-Service Flow Actions Service Provider Interface
 Self-service Flow Actions is a framework for creating and publishing HTTP APIs for consumption by Marketo Smart Campaigns as flow actions. The accompanying OpenAPI/Swagger document is a Service-Provider Interface describing how an API must be implemented for automatic integration to Marketo instances.  Implementation of an API requires at least 3 and as many as 7 endpoints, definition of an authentication schema, and the components and schemas required for implementation
 
-**Note: This is currently a pre-release feature in open Beta testing**
-
-
 [//]: # (Add Overview Diagram Here)
 
 ## Changelog
+
+### 6/4/22 Release(1.0.0)
+
+* Schema version now 1.0.0
+* Services using Beta schemas will have continued support for at least one year, but services intended for long term use should update x-schema-version to 1.0.0
 
 ### Changes for 5/9/22 release (3.1)
 
